@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react"
 import { useTexture } from "@react-three/drei"
-import { RigidBody } from "@react-three/rapier"
+import {CuboidCollider, RigidBody} from "@react-three/rapier"
 import create from "zustand"
 import dirt from "./assets/dirt.jpg"
 
@@ -23,6 +23,7 @@ export function Cube(props) {
   const [hover, set] = useState(null)
   const addCube = useCubeStore((state) => state.addCube)
   const texture = useTexture(dirt)
+  const [intersecting, setIntersection] = useState(false);
   const onMove = useCallback((e) => {
     e.stopPropagation()
     set(Math.floor(e.faceIndex / 2))
@@ -39,8 +40,12 @@ export function Cube(props) {
       [x, y, z + 1],
       [x, y, z - 1],
     ]
-    addCube(...dir[Math.floor(e.faceIndex / 2)])
-  }, [])
+    if(intersecting){
+      addCube(...dir[Math.floor(e.faceIndex / 2)])
+    }
+
+
+  }, [intersecting])
   return (
     <RigidBody {...props} type="fixed" colliders="cuboid" ref={ref}>
       <mesh receiveShadow castShadow onPointerMove={onMove} onPointerOut={onOut} onClick={onClick}>
@@ -49,6 +54,13 @@ export function Cube(props) {
         ))}
         <boxGeometry />
       </mesh>
+      <CuboidCollider
+          position={[0, 0, 1]}
+          args={[5, 3, 1]}
+          sensor
+          onIntersectionEnter={() => setIntersection(true)}
+          onIntersectionExit={() => setIntersection(false)}
+      />
     </RigidBody>
   )
 }

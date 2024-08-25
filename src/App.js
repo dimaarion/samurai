@@ -4,6 +4,8 @@ import { Physics } from "@react-three/rapier"
 import { Ground } from "./Ground"
 import { Player } from "./Player"
 import { Cube, Cubes } from "./Cube"
+import Box from "./Box";
+import Goal from "./Goal";
 
 // The original was made by Maksim Ivanow: https://www.youtube.com/watch?v=Lc2JvBXMesY&t=124s
 // This demo needs pointer-lock, that works only if you open it in a new window
@@ -23,9 +25,10 @@ export default function App() {
         <Sky sunPosition={[100, 20, 100]} />
         <ambientLight intensity={0.3} />
         <pointLight castShadow intensity={0.8} position={[100, 100, 100]} />
-        <Physics gravity={[0, -30, 0]}>
+        <Physics debug = {true} gravity={[0, -30, 0]} >
           <Ground />
           <Player />
+            <Box/>
           <Cube position={[0, 0.5, -10]} />
           <Cubes />
         </Physics>
