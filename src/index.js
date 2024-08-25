@@ -1,17 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { useState } from "react"
+import { createRoot } from "react-dom/client"
+import { Footer } from "@pmndrs/branding"
+import "./styles.css"
+import App from "./App"
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+function Overlay() {
+  const [ready, set] = useState(false)
+  return (
+    <>
+      <App />
+      <div className="dot" />
+      <div className={`fullscreen bg ${ready ? "ready" : "notready"} ${ready && "clicked"}`}>
+        <div className="stack">
+          <button onClick={() => set(true)}>Start</button>
+        </div>
+        <Footer date="16. June" year="2021" />
+      </div>
+    </>
+  )
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+createRoot(document.getElementById("root")).render(<Overlay />)
