@@ -1,57 +1,55 @@
 import {useFBX} from "@react-three/drei";
 import katanaUrl from "../assets/Wado_Ichimonji.fbx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {routable} from "../actions";
 import {useFrame} from "@react-three/fiber";
-import { useSpring, animated, config } from "@react-spring/three";
+import {useSpring, animated, config} from "@react-spring/three";
+import {CuboidCollider, RigidBody} from "@react-three/rapier";
 
 
 export default function Katana(props) {
     const [isClicked, setIsClicked] = useState(false);
     const fbx = useFBX(katanaUrl);
     const [active, setActive] = useState(false);
+    const [swing, setSwing] = useState(false);
+
     const attackKatana = []
 
-    const {position} = useSpring({
-        from: {position: [1,1,0]},
-        to: [
-            {position:[1,-0.8,0]},
-            {position:[2,1.5,0]},
-            {position:[1,1,0]},
+    const ref = useRef();
 
-        ],
 
-        config: { tension: 4000}
+
+    const { rotation, position } = useSpring({
+        from: { rotation: [0, 0, 0], position: [0, 0, 0] },
+        to: [{
+            rotation: swing ? [0, 0, routable(-120)] : [0, 0, 0], // Меч поворачивается вниз во время удара
+            position: swing ? [0, -60, 0] : [0, 1, 0], // Меч немного опускается во время удара
+        },{
+            rotation: swing ? [0, 0, routable(40)] : [0, 0, 0], // Меч поворачивается вниз во время удара
+            position: swing ? [0, 50, 0] : [0, 1, 0], // Меч немного опускается во время удара
+        }],
+        config: { mass: 1, tension: 2000, friction: 100 },
+        onRest: () => setSwing(false), // Возвращаем меч в исходное положение после удара
     });
 
-    const {rotation} = useSpring({
-        from:  {rotation:[0,0,0]},
-        to: [
 
-            {rotation:[0,0,-1]},
-            {rotation:[0,0,0.2]},
-            {rotation:[0,0,0]},
-
-
-        ],
-
-        config: { tension: 4000 }
-    });
-
-    useFrame((state)=>{
+    useFrame((state) => {
         const t = state.clock.getElapsedTime();
 
     })
-    useEffect(() => {
 
-    }, []);
-    return  <group dispose={null} {...props}>
-        <group rotation={[routable(180), routable(-90), routable(-40)]} >
-            <animated.mesh position={position} rotation={rotation} scale={0.02} onPointerDown = {()=>setActive(true)} onPointerUp = {()=>setActive(false)}>
-                <primitive object={fbx} />
-            </animated.mesh>
 
+    return <group ref={ref} dispose={null}>
+            <group rotation={[routable(180), routable(-90), routable(-30)]} position = {[0,0,-2]} scale={0.02} onPointerUp={() => setActive(false)} onPointerDown={() => setActive(true)}>
+                <animated.mesh
+                    rotation={rotation}
+                    position={position}
+                    onPointerDown={() => setSwing(!swing)} // Триггерим удар при клике
+                >
+                <primitive object={fbx}/>
+                </animated.mesh>
+            </group>
         </group>
-    </group>
+
 }
 useFBX.preload("/Wado_Ichimonji.fbx")

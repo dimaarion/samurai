@@ -26,14 +26,14 @@ export default function App() {
                 <Sky sunPosition={[100, 20, 100]}/>
                 <ambientLight intensity={0.8}/>
                 <pointLight castShadow intensity={0.8} position={[100, 100, 100]}/>
-                <Physics debug={true} gravity={[0, -30, 0]}>
+                <Physics debug gravity={[0, -30, 0]}>
                     <Ground/>
                     <Player/>
-                    <Box position={[0, 3.5, -10]}/>
-                    <Box position={[0, 3, -10]}/>
-                    <Box position={[0, 2, -10]}/>
-                    <Box position={[0, 1.5, -10]}/>
-                    <Box position={[0, 0.5, -10]}/>
+                    <Box position={[1, 3.5, 10]}/>
+                    <Box position={[2, 3, 12]}/>
+                    <Box position={[3, 2, 34]}/>
+                    <Box position={[4, 1.5, 16]}/>
+                    <Box position={[5, 0.5, 18]}/>
                 </Physics>
 
                 <PointerLockControls/>
