@@ -5,11 +5,14 @@ import {Ground} from "./Ground"
 import {Player} from "./Player"
 import Box from "./Box";
 import * as THREE from "three";
+import {Counter} from "./Counter";
 
 
 export default function App() {
 
     return (
+        <>
+
         <KeyboardControls
             map={[
                 {name: "forward", keys: ["ArrowUp", "w", "W"]},
@@ -39,5 +42,6 @@ export default function App() {
                 <PointerLockControls/>
             </Canvas>
         </KeyboardControls>
+        </>
     )
 }
