@@ -29,7 +29,7 @@ export default function App() {
                 <Sky sunPosition={[100, 20, 100]}/>
                 <ambientLight intensity={0.8}/>
                 <pointLight castShadow intensity={0.8} position={[100, 100, 100]}/>
-                <Physics debug gravity={[0, -30, 0]}>
+                <Physics  gravity={[0, -30, 0]}>
                     <Ground/>
                     <Player/>
                     <Box position={[1, 3.5, 10]}/>

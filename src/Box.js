@@ -4,6 +4,8 @@ import {BallCollider, CuboidCollider, RigidBody} from "@react-three/rapier"
 import create from "zustand"
 import sceneUrl from "./assets/scene.glb";
 import {useFrame} from "@react-three/fiber";
+import { decrement, increment, incrementByAmount } from './reduser/clickObject.js'
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Box(props) {
     const [intersecting, setIntersection] = useState("blue");
@@ -14,6 +16,8 @@ export default function Box(props) {
     const ref = useRef();
     const lev = useRef();
     const {nodes, materials} = useGLTF(sceneUrl)
+    const clickObject = useSelector((state) => state.clickObject.value)
+    const dispatch = useDispatch()
 
     const useBearStore = create((set) => ({
         bears: 0,
@@ -26,7 +30,7 @@ export default function Box(props) {
     function onClick(e) {
         e.object.position.x += 1
     }
-console.log(bears)
+
     useEffect(() => {
         if(name === "player" && active){
             setTimeout(()=>{
@@ -46,7 +50,7 @@ console.log(bears)
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
         if(isSensor){
-            ref.current.setLinvel({ x: positionPlayer.x, y: 0, z: positionPlayer.z });
+         //   ref.current.setLinvel({ x: positionPlayer.x, y: 0, z: positionPlayer.z });
         }
     })
 
@@ -63,21 +67,18 @@ console.log(bears)
 
     return <group>
         <RigidBody {...props} colliders="cuboid" name = "box" contactSkin = {5}  ref={ref} enabledRotations={[false, false, false]} >
-            <mesh receiveShadow castShadow   onPointerUp = {()=>setActive(false)}  onPointerDown = {()=>setActive(true)} >
+            <mesh receiveShadow castShadow
+                  onPointerUp = {()=> {setActive(false);dispatch(decrement())}}
+                  onPointerDown = {()=> {setActive(true);}}
+                  onClick = {()=>clickObject?dispatch(decrement()):dispatch(increment())}
+            >
                 <meshStandardMaterial color={intersecting}/>
                 <boxGeometry/>
             </mesh>
-            <mesh ref={lev} fontSize={1} position={[0,1.5,0]} scale = {[2,0.5,0.5]}>
+            <mesh ref={lev} fontSize={1} position={[0,1.5,0]} scale = {[8,0.5,0.5]}>
                 <meshStandardMaterial color={"red"} />
                 <boxGeometry/>
             </mesh>
-            <BallCollider sensor={true} args={[50]} onIntersectionEnter={(e)=> {
-                setIntersection("green");
-                persecute(e)
-            }} onIntersectionExit={()=> {
-                setIntersection("blue");
-                setIsSensor(false)
-            }} />
             <CuboidCollider sensor={true} args={[3,3,3]} onIntersectionExit={()=> {
                 setName("");
 

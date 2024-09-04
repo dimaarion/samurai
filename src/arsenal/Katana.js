@@ -4,7 +4,9 @@ import {useEffect, useRef, useState} from "react";
 import {routable} from "../actions";
 import {useFrame} from "@react-three/fiber";
 import {useSpring, animated, config} from "@react-spring/three";
-import {CuboidCollider, RigidBody} from "@react-three/rapier";
+import {decrement, increment, incrementByAmount} from '../reduser/clickObject.js'
+//import {incrementCount, decrementCount} from '../reduser/counterSlice.js'
+import {useDispatch, useSelector} from "react-redux";
 
 
 export default function Katana(props) {
@@ -12,44 +14,103 @@ export default function Katana(props) {
     const fbx = useFBX(katanaUrl);
     const [active, setActive] = useState(false);
     const [swing, setSwing] = useState(false);
-
+    const clickObject = useSelector((state) => state.clickObject.value)
+    const dispatch = useDispatch()
     const attackKatana = []
 
     const ref = useRef();
+    const sens = useRef();
+
+    let count = 1;
 
 
+    let attack = [{
+        rotation: clickObject? [0, 0, routable(-120)] : [0, 0, 0],
+        position: clickObject? [0, -80, 0] : [0, 1, 0],
+    }, {
+        rotation: clickObject? [0, 0, routable(40)] : [0, 0, 0],
+        position: clickObject? [0, 50, 0] : [0, 1, 0],
+    }];
 
-    const { rotation, position } = useSpring({
-        from: { rotation: [0, 0, 0], position: [0, 0, 0] },
-        to: [{
-            rotation: swing ? [0, 0, routable(-120)] : [0, 0, 0], // Меч поворачивается вниз во время удара
-            position: swing ? [0, -60, 0] : [0, 1, 0], // Меч немного опускается во время удара
-        },{
-            rotation: swing ? [0, 0, routable(40)] : [0, 0, 0], // Меч поворачивается вниз во время удара
-            position: swing ? [0, 50, 0] : [0, 1, 0], // Меч немного опускается во время удара
-        }],
-        config: { mass: 1, tension: 2000, friction: 100 },
-        onRest: () => setSwing(false), // Возвращаем меч в исходное положение после удара
+    let attack2 = [{
+        rotation: clickObject? [0, routable(-30), routable(-120)] : [0, 0, 0],
+        position: clickObject? [-10, -80, -50] : [0, 1, 0],
+    }, {
+        rotation: clickObject? [0, 0, routable(40)] : [0, 0, 0],
+        position: clickObject? [0, 50, 0] : [0, 1, 0],
+    }]
+
+    let attack3 = [{
+        rotation: clickObject? [0, routable(30), routable(-120)] : [0, 0, 0],
+        position: clickObject? [-10, -80, 50] : [0, 1, 0],
+    }, {
+        rotation: clickObject? [0, 0, routable(40)] : [0, 0, 0],
+        position: clickObject? [0, 50, 0] : [0, 1, 0],
+    }]
+
+    let attack4 = [{
+        rotation: clickObject? [0, 0, routable(-120)] : [0, 0, 0],
+        position: clickObject? [-80, 80, 0] : [0, 1, 0],
+    }, {
+        rotation: clickObject? [0, 0, routable(-10)] : [0, 0, 0],
+        position: clickObject? [150, 0, 0] : [0, 0, 0],
+    },{
+        rotation: clickObject? [0, 0, 0] : [0, 0, 0],
+        position: clickObject? [0, 0, 0] : [0, 0, 0],
+    }]
+
+
+    if(count === 1){
+        attack = [... attack4];
+    }
+
+    const {rotation, position} = useSpring({
+        from: {rotation: [0, 0, 0], position: [0, 0, -2]},
+        to: [attack],
+        config: {mass: 1, tension: 2000, friction: 100},
+        onRest: () => dispatch(decrement()),
     });
-
+/*{
+            rotation: clickObject && attack === 0? [0, 0, routable(-120)] : [0, 0, 0],
+            position: clickObject && attack === 0? [0, -80, 0] : [0, 1, 0],
+        }, {
+            rotation: clickObject && attack === 0? [0, 0, routable(40)] : [0, 0, 0],
+            position: clickObject && attack === 0? [0, 50, 0] : [0, 1, 0],
+        },{
+            rotation: clickObject && attack === 1? [0, 0, routable(-120)] : [0, 0, 0],
+            position: clickObject && attack === 1? [0, -80, 0] : [0, 1, 0],
+        }, {
+            rotation: clickObject && attack === 1? [0, 0, routable(40)] : [0, 0, 0],
+            position: clickObject && attack === 1? [0, 50, 0] : [0, 1, 0],
+        },{
+            rotation: clickObject && attack === 1? [routable(30), 0, routable(-120)] : [0, 0, 0],
+            position: clickObject && attack === 1? [0, -80, -30] : [0, 1, 0],
+        }, {
+            rotation: clickObject && attack === 1? [0, 0, routable(40)] : [0, 0, 0],
+            position: clickObject && attack === 1? [0, 50, 0] : [0, 1, 0],
+        },{
+            rotation: clickObject && attack === 2? [routable(-30), 0, routable(-120)] : [0, 0, 0],
+            position: clickObject && attack === 2? [0, -80, 30] : [0, 1, 0],
+        }, {
+            rotation: clickObject && attack === 2? [0, 0, routable(40)] : [0, 0, 0],
+            position: clickObject && attack === 2? [0, 50, 0] : [0, 1, 0],
+        }*/
 
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
-
     })
 
+    useEffect(() => {
 
-    return <group ref={ref} dispose={null}>
-            <group rotation={[routable(180), routable(-90), routable(-30)]} position = {[0,0,-2]} scale={0.02} onPointerUp={() => setActive(false)} onPointerDown={() => setActive(true)}>
-                <animated.mesh
-                    rotation={rotation}
-                    position={position}
-                    onPointerDown={() => setSwing(!swing)} // Триггерим удар при клике
-                >
-                <primitive object={fbx}/>
-                </animated.mesh>
-            </group>
-        </group>
+    }, []);
+
+
+    return <group {...props} type={"kinematicPosition"} ref={ref} >
+        <animated.mesh position={position} rotation={rotation}>
+            <primitive object={fbx}/>
+        </animated.mesh>
+    </group>
+
 
 }
 useFBX.preload("/Wado_Ichimonji.fbx")

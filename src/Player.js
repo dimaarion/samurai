@@ -1,12 +1,21 @@
 import * as THREE from "three"
 import * as RAPIER from "@dimforge/rapier3d-compat"
-import {useRef, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {useFrame, useStore} from "@react-three/fiber"
-import { useKeyboardControls } from "@react-three/drei"
-import {CapsuleCollider, CuboidCollider, RigidBody, useRapier} from "@react-three/rapier"
+import {useFBX, useKeyboardControls} from "@react-three/drei"
+import {
+  BallCollider,
+  CapsuleCollider,
+  CuboidCollider,
+  RigidBody,
+  useRapier,
+  useRevoluteJoint
+} from "@react-three/rapier"
+import katanaUrl from "./assets/Wado_Ichimonji.fbx";
 import Katana from "./arsenal/Katana";
 import {routable} from "./actions";
 import create from "zustand";
+
 
 
 const SPEED = 10;
@@ -20,13 +29,9 @@ export function Player({ lerp = THREE.MathUtils.lerp }) {
   const ref = useRef();
   const rapier = useRapier();
   const [, get] = useKeyboardControls();
+  const fbx = useFBX(katanaUrl);
 
 
-  const useBearStore = create((set,get) => ({
-    getCode:get(),
-  }))
-  const { lang, setLang, getCode } = useBearStore();
-  console.log(getCode)
 
   useFrame((state) => {
     const { forward, backward, left, right, jump } = get();
@@ -48,7 +53,11 @@ export function Player({ lerp = THREE.MathUtils.lerp }) {
     const grounded = ray && ray.collider && Math.abs(ray.toi) <= 1.75;
 
     if (jump && grounded) ref.current.setLinvel({ x: 0, y: 7.5, z: 0 });
+    //axe.current.setTraslate
+   // console.log(ref.current.translation())
+   // axe.current.setTranslation({x:ref.current.translation().x,y:ref.current.translation().y,z:ref.current.translation().z + 20})
   })
+
 
 
 
@@ -56,10 +65,14 @@ export function Player({ lerp = THREE.MathUtils.lerp }) {
     <>
       <RigidBody ref={ref} colliders={false}  name = "player" mass={1} scale={[4,8,4]} type="dynamic" position={[0, 10, 0]} enabledRotations={[false, false, false]}>
         <CapsuleCollider args={[0.75, 0.5]}  />
+        <BallCollider sensor={true} args={[50]} />
+
       </RigidBody>
-      <group ref={axe} >
-        <Katana />
+      <group  ref={axe} >
+          <Katana rotation={[routable(180), routable(-90), routable(-40)]}
+                  position={[0, 0, -2]} scale={0.02} />
       </group>
     </>
   )
 }
+useFBX.preload("/Wado_Ichimonji.fbx")
