@@ -169,3 +169,28 @@ button {
   text-decoration: underline;
   color: inherit;
 }
+
+.invent table{
+  width: 100%;
+  border: solid 1px red;
+  background-color: antiquewhite;
+}
+.invent table td{
+  height: 100px;
+  width: 50px;
+  border: solid 1px red;
+  text-align: center;
+}
+.invent{
+  position: fixed;
+  margin: auto;
+  right: 0;
+  left: 0;
+  bottom: 10px;
+  width: 50%;
+  height: 100px;
+  z-index: 1000;
+}
+.invent .active{
+  border: solid 2px blue;
+}

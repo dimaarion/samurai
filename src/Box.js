@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react"
 import {Text, useGLTF, useTexture} from "@react-three/drei"
 import {BallCollider, CuboidCollider, RigidBody} from "@react-three/rapier"
-import create from "zustand"
 import sceneUrl from "./assets/scene.glb";
 import {useFrame} from "@react-three/fiber";
 import { decrement, increment, incrementByAmount } from './reduser/clickObject.js'
+import { incrementInvent, decrementInvent, incrementByAmountInvent } from './reduser/invent.js'
 import {useDispatch, useSelector} from "react-redux";
 
 export default function Box(props) {
@@ -19,17 +19,7 @@ export default function Box(props) {
     const clickObject = useSelector((state) => state.clickObject.value)
     const dispatch = useDispatch()
 
-    const useBearStore = create((set) => ({
-        bears: 0,
-        increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-        removeAllBears: () => set({ bears: 0 }),
-    }))
 
-    const bears = useBearStore((state) => state.bears)
-
-    function onClick(e) {
-        e.object.position.x += 1
-    }
 
     useEffect(() => {
         if(name === "player" && active){
@@ -70,7 +60,10 @@ export default function Box(props) {
             <mesh receiveShadow castShadow
                   onPointerUp = {()=> {setActive(false);dispatch(decrement())}}
                   onPointerDown = {()=> {setActive(true);}}
-                  onClick = {()=>clickObject?dispatch(decrement()):dispatch(increment())}
+                  onClick = {()=> {
+                      clickObject ? dispatch(decrement()) : dispatch(increment());
+                      dispatch(incrementInvent({name:"test",icon:"icon"}))
+                  }}
             >
                 <meshStandardMaterial color={intersecting}/>
                 <boxGeometry/>
