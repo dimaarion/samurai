@@ -1,23 +1,13 @@
 import Dexie from 'dexie';
 
 
+const db = new Dexie('myDatabase');
+
+db.version(1).stores({
+    friends: '++id, name, x,y,z'
+});
 
 
 
-export default class Database{
 
-    db = new Dexie('myDatabase');
-
-
-    async create() {
-        this.db.version(1).stores({
-            friends: '++id, name, age' // Primary key and indexed props
-        });
-    }
-
-    async addCollection() {
-
-    }
-
-
-}
+export {db};

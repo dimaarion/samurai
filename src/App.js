@@ -8,8 +8,9 @@ import * as THREE from "three";
 import {useSelector} from "react-redux";
 import {useEffect} from "react";
 import Invent from "./components/Invent";
-import Platform from "./Platform";
+import Platform from "./components/Platform";
 import Ball from "./Ball";
+import SavePortal from "./components/SavePortal";
 
 
 export default function App() {
@@ -17,7 +18,6 @@ export default function App() {
 
     return (
         <>
-
             <KeyboardControls
                 map={[
                     {name: "forward", keys: ["ArrowUp", "w", "W"]},
@@ -34,9 +34,11 @@ export default function App() {
                     <Sky sunPosition={[100, 20, 100]}/>
                     <ambientLight intensity={0.8}/>
                     <pointLight castShadow intensity={0.8} position={[100, 100, 100]}/>
-                    <Physics  gravity={[0, -30, 0]}>
+                    <Physics debug gravity={[0, -30, 0]}>
                         <Ball/>
                         <Platform/>
+                        <SavePortal position = {{x:5,y:0,z:-45}} />
+                        <SavePortal position = {{x:5,y:0,z:45}} />
                     </Physics>
 
                     <PointerLockControls/>
