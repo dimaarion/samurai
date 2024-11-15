@@ -1,13 +1,30 @@
-import {Box, Torus} from "@react-three/drei";
+import {Box, Torus, useGLTF} from "@react-three/drei";
 import {Physics, RigidBody, CuboidCollider} from "@react-three/rapier";
 import {routable} from "../actions";
 
 export default function Platform() {
+    const {nodes, materials} = useGLTF("./asset/model/level1.glb");
+    console.log(nodes)
     return (
-        <RigidBody colliders="cuboid" type="fixed">
-            <Box position={[0,-5,0]} scale={[20,1,1000]} rotation={[routable(0),routable(0),routable(0)]} material-color="blue" />
-            <Box position={[0,-5,-101]} scale={[20,1,1000]} rotation={[routable(0),routable(0),routable(0)]} material-color="blue" />
+        <>
+            <RigidBody rotation={[routable(0), routable(0), routable(0)]} position={[0, -5, 10]} colliders="trimesh"
+                       type="fixed">
+                <mesh geometry={nodes.road_1.geometry}  material={materials.panel}/>
 
-        </RigidBody>
+            </RigidBody>
+            <RigidBody colliders="trimesh" type="fixed" position={[0, -5, 10]} >
+                    <mesh geometry={nodes.road_2.geometry}  material={materials.fence}/>
+            </RigidBody>
+            <RigidBody colliders="trimesh" type="fixed" position={[0, -5, 10]} >
+                <mesh geometry={nodes.road_3.geometry}   material={materials.fence}/>
+            </RigidBody>
+            <RigidBody colliders="trimesh" type="fixed" position={[0, -5, 10]} >
+                <mesh geometry={nodes.road_4.geometry}   material={materials.fence}/>
+            </RigidBody>
+
+
+
+        </>
+
     )
 }
