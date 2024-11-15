@@ -11,9 +11,8 @@ export default function SavePortal(props) {
     let y = props.position ? props.position.y : 0;
     let z = props.position ? props.position.z : 0;
     return (
-        <RigidBody colliders="cuboid" type="fixed">
+        <group colliders="cuboid" type="fixed">
             <Box position={[x, y, z]} scale={[0.5, 50, 0.5]} material-color="red"/>
-            <CuboidCollider position={[x, y, z]} onIntersectionEnter={() =>dispatch(incrementSave({x: x, y: y,z: z}))} args={[5, 5, 1]} sensor={true}/>
-        </RigidBody>
+        </group>
     )
 }
