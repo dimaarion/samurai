@@ -99,6 +99,7 @@ export default function Settings() {
                 </g>
             </svg>
             <input type={"range"}   className="absolute top-[100px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range" />
+            <input type={"range"}   className="absolute top-[120px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range" />
         </div>
     </>
 }

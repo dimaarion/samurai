@@ -1,4 +1,4 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import {configureStore} from '@reduxjs/toolkit'
 import counterReducer from "./reduser/counterSlice";
 import clickObject from "./reduser/clickObject";
 import invent from "./reduser/invent";
