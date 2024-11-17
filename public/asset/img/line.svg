@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="600" height="10" viewBox="0 0 600 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="gradient_1" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="matrix(0 5 -300 0 300 5)">
+      <stop offset="0" stop-color="#FF7F3D" />
+      <stop offset="1" stop-color="#00CCCB" />
+    </radialGradient>
+  </defs>
+  <path id="line" d="M595 0C597.762 0 600 2.23822 600 5L600 5C600 7.76178 597.762 10 595 10L5 10C2.23822 10 0 7.76178 0 5L0 5C0 2.23822 2.23822 0 5 0L595 0Z" fill="url(#gradient_1)" />
+</svg>

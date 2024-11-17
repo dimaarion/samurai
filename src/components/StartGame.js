@@ -1,12 +1,17 @@
 import {Suspense, useEffect, useState} from 'react'
 import {useProgress} from "@react-three/drei";
+import {incrementPause, decrementPause} from "../reduser/pause";
+import {useSelector,useDispatch} from "react-redux";
 
 export default function StartGame({children}) {
     const [ready, setReady] = useState(false);
+    const [play, setPlay] = useState(false);
     const [over, setOver] = useState({play:"#FF7E3D",border:"#00CAC9"})
+    const pause = useSelector((state) => state.pause.value)
+    const dispatch = useDispatch();
 
     function Ready({setReady}) {
-        useEffect(() => () => void setReady(true), [])
+        useEffect(() => () =>setReady(true), [])
         return null
     }
 
@@ -25,7 +30,7 @@ export default function StartGame({children}) {
 
     return <>
         <Suspense fallback={<Ready setReady={setReady}/>}>{children}</Suspense>
-        <div className="fixed w-full h-full z-10 bg-gray-950 top-0 bottom-0 left-0 right-0">
+        {!play?<div className="fixed w-full h-full z-50 bg-gray-950 top-0 bottom-0 left-0 right-0">
             <div className="text-white flex justify-center w-full absolute bottom-0 top-0">
                 <div className="self-center grid gap-4 text-md">
                     {controlOptions.map((left) => <div key={left.action} className="flex grid grid-cols-4 gap-2">
@@ -37,7 +42,14 @@ export default function StartGame({children}) {
                         <div className="mt-6 mr-6">
                             <Loader/>
                         </div>
-                        <div className="w-20 cursor-pointer" title={"Играть"} onMouseOut={()=>setOver({play:"#FF7E3D",border:"#00CAC9"})} onMouseOver={()=>setOver({play:"#00CAC9",border:"#FF7E3D"})}>
+
+                         <div className="w-20 cursor-pointer" title={"Играть"}
+                                      onClick={()=> {
+                                          dispatch(decrementPause());
+                                          setPlay(true);
+                                      }}
+                                      onMouseOut={() => setOver({play: "#FF7E3D", border: "#00CAC9"})}
+                                      onMouseOver={() => setOver({play: "#00CAC9", border: "#FF7E3D"})}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"
                                  fill="none">
                                 <defs>
@@ -66,6 +78,6 @@ export default function StartGame({children}) {
                 </div>
 
             </div>
-        </div>
+        </div>:""}
     </>
 }

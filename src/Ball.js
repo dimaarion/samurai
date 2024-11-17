@@ -9,6 +9,7 @@ import {db} from "./components/Database";
 import {routable} from "./actions";
 import {incrementSave} from "./reduser/savePosition";
 import {MathUtils} from "three";
+import {decrementPause, incrementPause} from "./reduser/pause";
 
 
 const SPEED = 20;
@@ -103,9 +104,7 @@ export default function Ball(props) {
         const tiltAngle = upVector.angleTo(new THREE.Vector3(0, 1, 0));
 
         if (targetPosition.y < -100) {
-
-
-
+            dispatch(incrementPause())
         }
         if (tiltAngle > 2.5 || tiltAngle < 0.2) {
             //   ref.current?.setRotation(rotation,true)

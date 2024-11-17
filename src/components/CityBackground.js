@@ -1,13 +1,21 @@
-import {useLoader} from "@react-three/fiber";
+import {useLoader, useThree} from "@react-three/fiber";
 import * as THREE from "three";
+import {Decal} from "@react-three/drei";
+import {useEffect} from "react";
 
 export default function CityBackground() {
-    const texture = useLoader(THREE.TextureLoader, './asset/texture/city.png');
+    const Background = () => {
+        const { scene } = useThree();
+        useEffect(() => {
+            const loader = new THREE.TextureLoader();
+            loader.load('./asset/texture/city.png', (texture) => {
+                scene.background = texture; // Устанавливаем текстуру фоном
+            });
+        }, [scene]);
 
+        return null;
+    };
     return (
-        <mesh>
-            <sphereBufferGeometry args={[500, 60, 40]} />
-            <meshBasicMaterial map={texture} side={THREE.BackSide} />
-        </mesh>
+       <Background/>
     );
 }
