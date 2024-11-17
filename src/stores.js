@@ -5,6 +5,7 @@ import invent from "./reduser/invent";
 import savePosition from "./reduser/savePosition";
 import restart from "./reduser/restart"
 import pause from "./reduser/pause";
+import sound from "./reduser/sound";
 
 
 
@@ -15,6 +16,7 @@ export default configureStore({
         inventSlice:invent,
         savePosition:savePosition,
         restart:restart,
-        pause:pause
+        pause:pause,
+        sound:sound
     },
 })
