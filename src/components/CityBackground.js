@@ -15,6 +15,7 @@ export default function CityBackground() {
 
         return null;
     };
+    let test= 10;
     return (
        <Background/>
     );
