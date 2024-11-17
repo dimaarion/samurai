@@ -75,7 +75,7 @@ export default function App() {
                         </Physics>
 
                         {!pause ? <PositionalAudio hasPlaybackControl={true} autoplay loop
-                                                   url="./asset/music/child-light-145463.mp3" distance={10}/> : ""}
+                                                   url="./asset/sound/y2mate.com - Dmitriy Lukyanov_Underwater.mp3" distance={10}/> : ""}
                     </Canvas>
                 </StartGame>
             </KeyboardControls>

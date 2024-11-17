@@ -6,8 +6,14 @@ module.exports = {
     "./node_modules/tw-elements-react/dist/js/**/*.js"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        "orange":"#FF7E3D",
+        "aqua":"#00CCCB"
+
+      }
+    },
   },
   darkMode: "class",
-  plugins: [require("tw-elements-react/dist/plugin.cjs")]
+  plugins: [require("tw-elements-react/dist/plugin.cjs"),require("@tailwindcss/forms")]
 }

@@ -1,9 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
-import {incrementSounds} from "../reduser/sound";
+
 
 export default function Settings() {
     const dispatch = useDispatch();
-    const sound = useSelector((state) => state.sound.value)
+
     return <>
         <div className="fixed z-30 text-center w-[400px] left-0 right-0 m-auto mt-[100px]">
             <svg width="100%" viewBox="0 0 789 800" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@ export default function Settings() {
                     </g>
                 </g>
             </svg>
-            <input type={"range"}   className="absolute top-[100px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-[1px] border-aqua cursor-pointer" />
+            <input type={"range"}   className="absolute top-[100px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range" />
         </div>
     </>
 }

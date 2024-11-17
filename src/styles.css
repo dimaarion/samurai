@@ -185,3 +185,20 @@ button {
 .invent .active{
   border: solid 2px blue;
 }
+
+
+  .range {
+    @apply appearance-none;
+  }
+  .range::-webkit-slider-thumb {
+    @apply bg-orange rounded-full border-aqua border-2;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+  .range::-moz-range-thumb {
+    @apply bg-orange rounded-full border-aqua border-2;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
