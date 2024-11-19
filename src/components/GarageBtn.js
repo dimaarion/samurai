@@ -1,9 +1,21 @@
 import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {incrementGarages} from "../reduser/garageOpen";
+import {decrementSettings} from "../reduser/settingsOpen";
+import {decrementPauseOpen} from "../reduser/pauseOpen";
+import {incrementPause} from "../reduser/pause";
 
 export default function GarageBtn(){
     const [over, setOver] = useState({play:"#FF803F",border:"#00CAC9"});
+    const dispatch = useDispatch();
     return <>
-        <svg  onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
+        <svg onClick={()=>{
+            dispatch(incrementGarages());
+            dispatch(decrementSettings());
+            dispatch(decrementPauseOpen());
+            dispatch(incrementPause());
+        }
+        } onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
               onMouseOver={() => setOver({play: "#00CAC9", border: "#FF803F"})} width="100%" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="garage">
                 <path id="garage-c" d="M0 75C0 33.5786 33.5786 0 75 0C116.421 0 150 33.5786 150 75C150 116.421 116.421 150 75 150C33.5786 150 0 116.421 0 75Z"

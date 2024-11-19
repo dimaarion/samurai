@@ -1,13 +1,14 @@
 import Restart from "../controls/Restart";
-import Play from "./Play";
 import GarageBtn from "./GarageBtn";
 import {useState} from "react";
 import CloseBtn from "./CloseBtn";
 import LevelBtn from "./LevelBtn";
+import {useDispatch} from "react-redux";
+import {decrementPauseOpen} from "../reduser/pauseOpen";
+import {decrementPause} from "../reduser/pause";
 
 export default function Pause() {
-    const [over, setOver] = useState({play: "#FF803F", border: "#00CAC9"});
-    const [overS, setOverS] = useState({play: "#FF803F", border: "#00CAC9"});
+    const dispatch = useDispatch()
 
 
     let w = "w-[90px] h-[90px]";
@@ -53,7 +54,10 @@ export default function Pause() {
             <div className="absolute w-[350px] h-4  m-auto left-0 right-0 top-[300px]">
                 <img src="./asset/img/line.svg"/>
             </div>
-            <div className="absolute w-[150px] h-4  m-auto left-0 right-0 bottom-[80px] cursor-pointer">
+            <div onClick={()=>{
+                dispatch(decrementPauseOpen())
+                dispatch(decrementPause())
+            }} className="absolute w-[150px] h-4  m-auto left-0 right-0 bottom-[80px] cursor-pointer">
                 <CloseBtn />
             </div>
         </div>

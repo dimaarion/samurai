@@ -1,12 +1,18 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
+import {decrementSettings} from "../reduser/settingsOpen";
+import {incrementPauseOpen} from "../reduser/pauseOpen";
 import {incrementPause} from "../reduser/pause";
 
 export default function PauseBtn() {
     const [over, setOver] = useState({play:"#FF803F",border:"#00CAC9"});
     const dispatch = useDispatch();
     return <>
-        <svg onClick={()=>dispatch(incrementPause())} onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
+        <svg onClick={()=> {
+            dispatch(incrementPauseOpen());
+            dispatch(decrementSettings());
+            dispatch(incrementPause());
+        }} onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
              onMouseOver={() => setOver({play: "#00CAC9", border: "#FF803F"})} width="100%" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="pause">
                 <path id="pause-c2"

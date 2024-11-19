@@ -5,6 +5,11 @@ import invent from "./reduser/invent";
 import savePosition from "./reduser/savePosition";
 import restart from "./reduser/restart"
 import pause from "./reduser/pause";
+import music from "./reduser/music";
+import sound from "./reduser/sound";
+import settingsOpen from "./reduser/settingsOpen";
+import garageOpen from "./reduser/garageOpen";
+import pauseOpen from "./reduser/pauseOpen";
 
 
 
@@ -15,6 +20,11 @@ export default configureStore({
         inventSlice:invent,
         savePosition:savePosition,
         restart:restart,
-        pause:pause
+        pause:pause,
+        music:music,
+        sound:sound,
+        settings:settingsOpen,
+        garageOpen:garageOpen,
+        pauseOpen:pauseOpen
     },
 })

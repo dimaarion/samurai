@@ -6,7 +6,7 @@ export default function CloseBtn(){
     const dispatch = useDispatch();
     const [over, setOver] = useState({play: "#FF803F", border: "#00CAC9"});
     return <>
-        <svg onClick={()=>dispatch(decrementPause())} onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
+        <svg className={"cursor-pointer"} onClick={()=>dispatch(decrementPause())} onMouseOut={() => setOver({play: "#FF803F", border: "#00CAC9"})}
              onMouseOver={() => setOver({play: "#00CAC9", border: "#FF803F"})} width="100%" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="close">
                 <g fill={over.play}>

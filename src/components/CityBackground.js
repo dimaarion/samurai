@@ -15,8 +15,15 @@ export default function CityBackground() {
 
         return null;
     };
-    let test= 10;
+
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('./asset/texture/city.png'); // Панорамное изображение
+
+
     return (
-       <Background/>
+        <mesh>
+            <sphereGeometry args={[100, 50, 50]} />
+            <meshBasicMaterial map={texture} side={THREE.BackSide} />
+        </mesh>
     );
 }
