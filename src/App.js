@@ -25,6 +25,7 @@ import garage from "./assets/garage.json"
 import {Physics, RigidBody} from '@react-three/rapier'
 import Plane from "./components/Plane";
 import Wheel from "./components/Wheel";
+import Player from "./components/Player";
 
 
 export default function App() {
@@ -78,13 +79,13 @@ export default function App() {
                         <directionalLight intensity={0.7} castShadow shadow-bias={-0.0004} position={[-20, 20, 20]}>
                             <orthographicCamera attach="shadow-camera" args={[-20, 20, 20, -20]} />
                         </directionalLight>
-                        <Physics gravity={[0, -10, 0]} paused={pause}>
+                        <Physics gravity={[0, -30, 0]} paused={pause} >
 
-                            {/*garage.filter((el)=>el.id === 1).map((el)=><Ball url={el.model} key = {el.id} friction={el.friction} mass = {el.mass} control = {el.control} speed={el.speed} />)*/}
+                            {garage.filter((el)=>el.id === 1).map((el)=><Ball url={el.model} key = {el.id} friction={el.friction} mass = {el.mass} control = {el.control} speed={el.speed} />)}
 
 
-                            <Wheel/>
-                            <Plane/>
+
+                            <Platform/>
 
                         </Physics>
 
