@@ -119,7 +119,7 @@ ref.current?.setAngvel({
                 const targetPosition = new THREE.Vector3(translation.x, translation.y, translation.z);
 
                 // Создаем поворот только вокруг оси Y
-                const euler = new THREE.Euler(0, rotation.x, 0); // Ограничиваем вращение оси Y
+                const euler = new THREE.Euler(0, rotation.y, 0); // Ограничиваем вращение оси Y
                 const limitedQuaternion = new THREE.Quaternion().setFromEuler(euler);
 
                 // Применяем ограниченное вращение к смещению камеры
