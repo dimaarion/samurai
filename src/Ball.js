@@ -99,27 +99,44 @@ export default function Ball(props) {
         if (forward || backward || leftward || rightward) {
             ref.current?.wakeUp()
         }
-ref.current?.setAngvel({
-    x:MathUtils.lerp(ref.current?.angvel().x, forward ? -Math.PI : backward ? Math.PI : 0, delta),
-    y:0,
-    z:0
-})
+        const cameraOffset = new THREE.Vector3(0, 30, 60); // Смещение камеры
+        const translation = ref.current.translation(); // Получаем позицию персонажа
+        const rotation = ref.current.rotation(); // Получаем кватернион персонажа
 
 
+        const target = new THREE.Vector3(5, 0, 5); // Позиция цели
+        const objectPosition = ref.current.translation;
+        const direction = target.clone().sub(objectPosition).normalize(); // Нормализованный вектор направления
+
+        const targetQuaternion = new THREE.Quaternion();
+        const up = new THREE.Vector3(0, 1, 0); // Ось вверх
+        targetQuaternion.setFromUnitVectors(up, direction);
+
+        // Интерполяция кватерниона для плавного вращения
+      //  ref.current.quaternion.slerp(targetQuaternion, 0.1);
+
+
+        /*ref.current?.setAngvel({
+            x:MathUtils.lerp(ref.current?.angvel().x, forward ? -speed : backward ? speed : 0, delta),
+            y:MathUtils.lerp(ref.current?.angvel().y, leftward ? -speed : rightward ? speed : 0, delta),
+            z:0
+        })*/
+
+        if(leftward){
+           // ref.current?.setRotation(new THREE.Quaternion(0, routable(-90), 0))
+        }
 
 
 
             if (ref.current) {
-            const cameraOffset = new THREE.Vector3(0, 30, 60); // Смещение камеры
-            const translation = ref.current.translation(); // Получаем позицию персонажа
-            const rotation = ref.current.rotation(); // Получаем кватернион персонажа
+
 
             if (translation && rotation) {
                 // Преобразуем позицию персонажа в THREE.Vector3
                 const targetPosition = new THREE.Vector3(translation.x, translation.y, translation.z);
 
                 // Создаем поворот только вокруг оси Y
-                const euler = new THREE.Euler(0, rotation.y, 0); // Ограничиваем вращение оси Y
+                const euler = new THREE.Euler(0, 0, 0); // Ограничиваем вращение оси Y
                 const limitedQuaternion = new THREE.Quaternion().setFromEuler(euler);
 
                 // Применяем ограниченное вращение к смещению камеры
@@ -133,9 +150,7 @@ ref.current?.setAngvel({
                 state.camera.lookAt(targetPosition);
             }
 
-            if(forward){
-           //     ref.current?.setRotation(new THREE.Quaternion(rotation.x, rotation.y, rotation.z))
-            }
+
         }
     });
 
