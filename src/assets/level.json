@@ -1,0 +1,9 @@
+[
+  {
+    "level": 1,
+    "name": "",
+    "model": "./asset/model/level1.glb",
+    "animations": ["coinAction.004"],
+    "scale": 0.3
+  }
+]

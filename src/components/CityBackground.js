@@ -22,7 +22,7 @@ export default function CityBackground() {
 
     return (
         <mesh>
-            <sphereGeometry args={[100, 50, 50]} />
+            <sphereGeometry args={[600, 50, 50]} />
             <meshBasicMaterial map={texture} side={THREE.BackSide} />
         </mesh>
     );

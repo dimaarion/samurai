@@ -6,7 +6,7 @@ import {
     Environment,
     Cloud,
     Clouds,
-    useGLTF, OrbitControls, PositionalAudio, CameraControls,
+    useGLTF, OrbitControls, PositionalAudio, CameraControls, Gltf,
 } from "@react-three/drei"
 
 import * as THREE from "three";
@@ -19,9 +19,9 @@ import StartGame from "./components/StartGame";
 import TopPanel from "./components/TopPanel";
 import Settings from "./components/Settings";
 import {useEffect} from "react";
-import Controller from 'ecctrl'
 import Garage from "./components/Garage";
 import garage from "./assets/garage.json"
+import level from "./assets/level.json"
 import {Physics, RigidBody} from '@react-three/rapier'
 import Plane from "./components/Plane";
 import Wheel from "./components/Wheel";
@@ -40,7 +40,7 @@ export default function App() {
 
         useEffect(() => {
             const loader = new THREE.TextureLoader();
-            loader.load('./asset/texture/city.jpg', (texture) => {
+            loader.load('./asset/texture/city.png', (texture) => {
                 scene.background = texture; // Устанавливаем текстуру фоном
             });
         }, [scene]);
@@ -54,6 +54,7 @@ export default function App() {
         {name: "leftward", keys: ["ArrowLeft", "a", "A"]},
         {name: "rightward", keys: ["ArrowRight", "d", "D"]},
         {name: "jump", keys: ["Space"]},
+        { name: "action4", keys: ["KeyF"] },
     ];
 
 
@@ -69,30 +70,22 @@ export default function App() {
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
+<Sky/>
+                    <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue" />
+                    <directionalLight castShadow intensity={0.2} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0001} position={[10, 50, -10]} />
+                    <ambientLight intensity={1} />
+                    <pointLight castShadow intensity={0.8} position={[50, 100, 50]} />
+
                     <KeyboardControls map={keyboardMap}>
-                        <Clouds material={THREE.MeshBasicMaterial}>
-                            <Cloud seed={10} bounds={50} volume={80} position={[40, 100, 80]}/>
-                        </Clouds>
-                        <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25}/>
-                        <ambientLight intensity={1}/>
-                        <pointLight castShadow intensity={0.8} position={[100, 100, 100]}/>
-                        <directionalLight intensity={0.7} castShadow shadow-bias={-0.0004} position={[-20, 20, 20]}>
-                            <orthographicCamera attach="shadow-camera" args={[-20, 20, 20, -20]} />
-                        </directionalLight>
-                        <Physics gravity={[0, -30, 0]} paused={pause} >
+                        <Physics debug={false} gravity={[0, -30, 0]} paused={pause} >
+                            {level.filter((el)=>el.level === 1).map((el)=><Platform key = {el.level + "platform"} url={el.model} actionsArray = {el.animations}/>)}
+                            {garage.filter((el)=>el.id === 1 && !restart).map((el)=><Wheel url={el.model} position={el.position} key = {el.id} friction={el.friction} mass = {el.mass} control = {el.control} speed={el.speed} />)}
 
-                            {garage.filter((el)=>el.id === 1).map((el)=><Ball url={el.model} key = {el.id} friction={el.friction} mass = {el.mass} control = {el.control} speed={el.speed} />)}
-
-
-
-                            <Platform/>
 
                         </Physics>
-
                         {!pause ? <PositionalAudio hasPlaybackControl={true} autoplay loop
                                                    url="./asset/sound/y2mate.com - Dmitriy Lukyanov_Underwater.mp3"
                                                    distance={music}/> : ""}
-
                     </KeyboardControls>
 
                 </Canvas>
@@ -104,5 +97,7 @@ export default function App() {
 useGLTF.preload([
     './asset/model/level1.glb',
     './asset/model/well.glb',
-    './asset/model/wheel-tree.glb'
+    './asset/model/wheel-tree.glb',
+    './asset/model/wheel_1.glb',
+    './asset/model/level_1_1.glb'
 ]);

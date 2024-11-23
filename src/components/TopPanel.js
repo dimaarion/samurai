@@ -1,6 +1,7 @@
 import GarageBtn from "./GarageBtn";
 import PauseBtn from "./PauseBtn";
 import SettingsBtn from "./SettingsBtn";
+import Restart from "../controls/Restart";
 
 export default function TopPanel() {
     return <>
@@ -42,6 +43,9 @@ export default function TopPanel() {
                 </div>
                 <div className="mt-2 cursor-pointer w-[50px] h-[50px]" >
                     <PauseBtn/>
+                </div>
+                <div className="mt-2 cursor-pointer w-[50px] h-[50px]" >
+                    <Restart/>
                 </div>
             </div>
         </div>
