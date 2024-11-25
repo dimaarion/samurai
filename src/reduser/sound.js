@@ -11,10 +11,13 @@ export const sound = createSlice({
     reducers: {
         updateSound: (state, action) => {
             state.value = action.payload;
-            db.music.update(2, {value: action.payload, active: 1});
         },
-        getSound: (state,action) => {
-            state.value = action.payload;
+        getSound: (state) => {
+            db.music?.where("name").startsWithAnyOfIgnoreCase(["sound"]).first().then((rez) => {
+                console.log(rez)
+                state.value = rez.values;
+            })
+
         }
     },
 })

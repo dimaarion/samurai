@@ -8,7 +8,6 @@ import {decrementSettings, incrementSettings} from "../reduser/settingsOpen";
 import {decrementPause, incrementPause} from "../reduser/pause";
 import {updateResize} from "../reduser/resize";
 
-const sounds =  db.music?.where("name").startsWithAnyOfIgnoreCase(["sound"]).first();
 
 export default function Settings() {
     const dispatch = useDispatch();
@@ -41,13 +40,14 @@ export default function Settings() {
 
         }
 
-        console.log(sounds.value)
+
 
     }, [])
 
     useEffect(() => {
-         //   dispatch(getSound(parseInt(sounds._value.value)));
-    }, [])
+       dispatch(getSound())
+        console.log(selectSound)
+    }, [selectSound])
 
     return <>
         <div className="fixed z-30 text-center w-[400px] left-0 right-0 m-auto mt-[100px]">
@@ -120,9 +120,9 @@ export default function Settings() {
                 </g>
             </svg>
 
-            <input type={"range"} id="sound" min={0} max={100} value={selectSound}
+            <input type={"range"} id="sound" min={0} max={100} defaultValue={selectSound}
                    onChange={(e) => {
-                       dispatch(updateSound(parseInt(e.target.value)));
+                       db.music.update(1, {value: e.target.value, active: 1})
                    }}
                    className="absolute top-[110px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range"/>
 
