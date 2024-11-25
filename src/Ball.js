@@ -17,14 +17,8 @@ import Controller from 'ecctrl'
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
 let SPEED = 10;
-const direction = new THREE.Vector3();
-const frontVector = new THREE.Vector3();
-const sideVector = new THREE.Vector3();
-const direction2 = new THREE.Vector3();
-const frontVector2 = new THREE.Vector3();
-const sideVector2 = new THREE.Vector3();
-const rotation = new THREE.Quaternion(routable(0), routable(0), routable(0));
-const vector = new THREE.Vector3(0, 0, 2)
+
+
 
 
 export default function Ball(props) {
@@ -38,27 +32,26 @@ export default function Ball(props) {
     const rotate = useRef();
     const [exit, setExit] = useState(false)
     const maxTiltAngle = Math.PI / 4;
-    const [speed, setSpeed] = useState(10);
+    const [speed, setSpeed] = useState(1);
     const [control, setControl] = useState(50);
     const [friction, setFriction] = useState(1);
     const [url, setUrl] = useState("./asset/model/wheel-tree.glb");
     const [playerPosition, setPlayerPosition] = useState({x: 0, y: 0, z: 0});
     const [mass, setMass] = useState(0.5);
-    const {scene} = useGLTF(props.url ? props.url : "./asset/model/wheel-tree.glb");
+    const {nodes, materials} = useGLTF("./asset/model/wheel-tree.glb");
+    const {scene} = useGLTF(props.url?props.url:"./asset/model/wheel-tree.glb");
 
+    const [rotationSpeed, setRotationSpeed] = useState(0.05); // Скорость поворота
 
-    //  const [rotationSpeed, setRotationSpeed] = useState(0.05); // Скорость поворота
-
-    const rotation = useRef(0);
-    const rotations = new THREE.Quaternion(routable(0), routable(0), routable(0));
-    const vector = new THREE.Vector3(0, 0, 2)
-
+    const direction = new THREE.Vector3();
+    const frontVector = new THREE.Vector3(0, 0, 1); // Вектор вперед
+    const sideVector = new THREE.Vector3(1, 0, 0); // Вектор в сторону (вправо)
 
     useEffect(() => {
         try {
             db.friends?.where("name").startsWithAnyOfIgnoreCase(["position"]).first().then((rez) => {
                 //   console.log(rez)
-                ref.current?.setTranslation({x: rez.x, y: rez.y, z: rez.z})
+               // ref.current?.setTranslation({x: rez.x, y: rez.y, z: rez.z})
             })
 
         } catch (e) {
@@ -70,9 +63,9 @@ export default function Ball(props) {
 
     useEffect(() => {
         if (restart) {
-            ref.current?.setRotation(rotation, true);
-            ref.current?.setTranslation({x: savePlayerPosition.x, y: savePlayerPosition.y, z: savePlayerPosition.z});
-            ref.current?.setAngvel({x: 0, y: 0, z: 0});
+            //    ref.current?.setRotation(rotations, true);
+            //  ref.current?.setTranslation({x: savePlayerPosition.x, y: savePlayerPosition.y, z: savePlayerPosition.z});
+            //   ref.current?.setAngvel({x: 0, y: 0, z: 0});
 
         } else {
 
@@ -96,74 +89,92 @@ export default function Ball(props) {
             setUrl(props.url)
         }
     }, [])
-    const radius = 5; // Радиус вращения
-    let angle = 0; // Угол вращения
-
-    useFrame((state, delta) => {
-        const {forward, backward, left, right, jump} = get()
 
 
-        // update camera
-        //state.camera.position.set(...ref.current?.translation())
-
-        if (forward || backward || left || right) {
-            ref.current.wakeUp()
+    useFrame((state,delta) => {
+        const {forward, backward, leftward, rightward, jump} = get();
+        if (forward || backward || leftward || rightward) {
+            ref.current?.wakeUp()
         }
+        direction.set(0, 0, 0); // Обнуляем направление
 
-        // movement
-        const velocity = ref.current?.linvel()
-        let rotateCamera = state.camera.rotation;
-        let targetPosition = ref.current?.translation();
-        const playerRotate = ref.current?.rotation();
-        frontVector.set(backward - forward, 0, 0);
-        sideVector.set(0, 0, 0);
+        // Двигаем персонажа вперед/назад
+        if (forward) direction.add(frontVector);
+        if (backward) direction.add(frontVector.negate()); // Вектор назад
 
-        direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(speed).applyEuler(state.camera.rotation);
-        // ref.current?.setLinvel({ x: direction.x, y: velocity.y, z: direction.z })
-        // state.camera.position.set(...ref.current?.translation())
+        // Двигаем персонажа влево/вправ
+        if (leftward) direction.add(sideVector.negate()); // Вектор влево
+        if (rightward) direction.add(sideVector); // Вектор вправо
 
-        const rotationE = new THREE.Euler();
+        // Нормализуем направление и умножаем на скорость
+        direction.normalize().multiplyScalar(speed);
 
-
-        if (left) {
-            angle += 0.01;
-        }
-        if (right) {
-            angle -= 0.01;
-        }
-        // Скорость вращения
-        const x = radius * Math.sin(angle);
-        const z = radius * Math.cos(angle);
-
-         state.camera.position.set(x, 50,z); // 2 — высота камеры
-         state.camera.lookAt(0, 0, 0); // Камера смотрит на центр
-        //  state.camera.position.set(0, 0, 0)
+        // Применяем линейную скорость к персонажу
 
 
 
+        const cameraOffset = new THREE.Vector3(0, 10, -20); // Смещение камеры
+        const translation = ref.current?.translation(); // Получаем позицию персонажа
+        const rotation = ref.current?.rotation(); // Получаем кватернион персонажа
 
-        const forwardDirection = new THREE.Vector3(direction.x, direction.y, direction.z).applyEuler(rotationE);
 
-        if (forward || backward) {
-            ref.current?.setAngvel(forwardDirection.multiplyScalar(speed))
-        } else {
-            ref.current?.setAngvel({
-                x: 0,
-                y: MathUtils.lerp(state.camera.rotation.y, left ? control : right ? -control : 0, delta),
-                z: 0,
+        const target = new THREE.Vector3(5, 0, 5); // Позиция цели
+        const directions = target.clone().sub(translation).normalize(); // Нормализованный вектор направления
 
-            })
+        const targetQuaternion = new THREE.Quaternion();
+        const up = new THREE.Vector3(0, 1, 0); // Ось вверх
+        targetQuaternion.setFromUnitVectors(up, directions);
+
+        // Интерполяция кватерниона для плавного вращения
+        //  ref.current.quaternion.slerp(targetQuaternion, 0.1);
+
+
+        /*ref.current?.setAngvel({
+            x:MathUtils.lerp(ref.current?.angvel().x, forward ? -speed : backward ? speed : 0, delta),
+            y:MathUtils.lerp(ref.current?.angvel().y, leftward ? -speed : rightward ? speed : 0, delta),
+            z:0
+        })*/
+
+
+        if(leftward){
+            // ref.current?.setRotation(new THREE.Quaternion(0, routable(-90), 0))
         }
 
 
-    })
+
+        if (ref.current) {
+
+
+            if (translation && rotation) {
+                // Преобразуем позицию персонажа в THREE.Vector3
+                const targetPosition = new THREE.Vector3(translation.x, translation.y, translation.z);
+
+                // Создаем поворот только вокруг оси Y
+                const euler = new THREE.Euler(0, 0, 0); // Ограничиваем вращение оси Y
+                const limitedQuaternion = new THREE.Quaternion().setFromEuler(euler);
+
+                // Применяем ограниченное вращение к смещению камеры
+                const rotatedCameraOffset = cameraOffset.applyQuaternion(limitedQuaternion);
+                const targetCameraPosition = targetPosition.clone().add(rotatedCameraOffset); // Позиция камеры относительно персонажа
+
+                // Плавное перемещение камеры
+                state.camera.position.lerp(targetCameraPosition, 0.1);
+
+                // Камера смотрит на персонажа
+                state.camera.lookAt(targetPosition);
+            }
+
+
+        }
+    });
+
+    //console.log(ref.current.wakeUp())
 
     return (
         <>
-            <RigidBody ref={ref} colliders="hull" scale={0.3} friction={friction} mass={mass} type="dynamic" position={[0, 20, 0]}>
-
-                    <primitive object={scene}/>
-
+            <RigidBody ref={ref} colliders="hull" scale={0.3}  friction={friction}  mass={mass}
+                       type="dynamic" position={[0, 5, 0]}>
+                <primitive object={scene} />
             </RigidBody>
         </>
 

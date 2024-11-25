@@ -6,7 +6,7 @@ import {
     Environment,
     Cloud,
     Clouds,
-    useGLTF, OrbitControls, PositionalAudio, CameraControls, Gltf,
+    useGLTF, OrbitControls, PositionalAudio, CameraControls, Gltf, PerspectiveCamera,
 } from "@react-three/drei"
 
 import * as THREE from "three";
@@ -18,14 +18,13 @@ import Pause from "./components/Pause";
 import StartGame from "./components/StartGame";
 import TopPanel from "./components/TopPanel";
 import Settings from "./components/Settings";
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 import Garage from "./components/Garage";
 import garage from "./assets/garage.json"
 import level from "./assets/level.json"
-import {Physics, RigidBody} from '@react-three/rapier'
-import Plane from "./components/Plane";
+import {Physics} from '@react-three/rapier'
 import Wheel from "./components/Wheel";
-import Player from "./components/Player";
+
 
 
 export default function App() {
@@ -35,6 +34,8 @@ export default function App() {
     const music = useSelector((state) => state.music.value);
     const garageOpen = useSelector((state) => state.garageOpen.value);
     const pauseOpen = useSelector((state) => state.pauseOpen.value);
+    const sound = useRef();
+
     const Background = () => {
         const {scene} = useThree();
 
@@ -54,8 +55,25 @@ export default function App() {
         {name: "leftward", keys: ["ArrowLeft", "a", "A"]},
         {name: "rightward", keys: ["ArrowRight", "d", "D"]},
         {name: "jump", keys: ["Space"]},
-        { name: "action4", keys: ["KeyF"] },
+        {name: "action4", keys: ["KeyF"]},
     ];
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                sound.current?.pause(); // Остановить звук, если вкладка невидима
+            } else {
+                sound.current?.play(); // Воспроизвести звук, если вкладка активна
+            }
+        };
+
+        // Слушаем изменения видимости страницы
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
 
 
     return (
@@ -70,22 +88,37 @@ export default function App() {
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
-<Sky/>
-                    <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue" />
-                    <directionalLight castShadow intensity={0.2} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0001} position={[10, 50, -10]} />
-                    <ambientLight intensity={1} />
-                    <pointLight castShadow intensity={0.8} position={[50, 100, 50]} />
+                    <Sky/>
+                    <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue"/>
+                    <directionalLight castShadow intensity={0.2} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0001}
+                                      position={[10, 50, -10]}/>
+                    <ambientLight intensity={1}/>
+                    <pointLight castShadow intensity={0.8} position={[50, 100, 50]}/>
 
                     <KeyboardControls map={keyboardMap}>
-                        <Physics debug={false} gravity={[0, -30, 0]} paused={pause} >
-                            {level.filter((el)=>el.level === 1).map((el)=><Platform key = {el.level + "platform"} url={el.model} actionsArray = {el.animations}/>)}
-                            {garage.filter((el)=>el.id === 1 && !restart).map((el)=><Wheel url={el.model} position={el.position} key = {el.id} friction={el.friction} mass = {el.mass} control = {el.control} speed={el.speed} />)}
+                        <Physics debug={false} gravity={[0, -30, 0]} paused={pause}>
+                            {level.filter((el) => el.level === 1).map((el) => <Platform key={el.level + "platform"}
+                                                                                        url={el.model}
+                                                                                        actionsArray={el.animations}/>)}
+                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Wheel url={el.model}
+                                                                                               position={el.position}
+                                                                                               key={el.id}
+                                                                                               friction={el.friction}
+                                                                                               mass={el.mass}
+                                                                                               control={el.control}
+                                                                                               speed={el.speed}/>)}
 
 
                         </Physics>
-                        {!pause ? <PositionalAudio hasPlaybackControl={true} autoplay loop
-                                                   url="./asset/sound/y2mate.com - Dmitriy Lukyanov_Underwater.mp3"
-                                                   distance={music}/> : ""}
+
+                        <PositionalAudio
+                            ref={sound}
+                            hasPlaybackControl={true}
+                            autopla={true}
+                            loop={true}
+                            url="./asset/sound/y2mate.com - Dmitriy Lukyanov_Underwater.mp3"
+                            distance={music}
+                        />
                     </KeyboardControls>
 
                 </Canvas>

@@ -10,6 +10,7 @@ import sound from "./reduser/sound";
 import settingsOpen from "./reduser/settingsOpen";
 import garageOpen from "./reduser/garageOpen";
 import pauseOpen from "./reduser/pauseOpen";
+import resize from "./reduser/resize";
 
 
 
@@ -25,6 +26,7 @@ export default configureStore({
         sound:sound,
         settings:settingsOpen,
         garageOpen:garageOpen,
-        pauseOpen:pauseOpen
+        pauseOpen:pauseOpen,
+        resize:resize
     },
 })
