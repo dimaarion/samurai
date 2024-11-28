@@ -44,27 +44,19 @@ export default function Wheel(props) {
     }, [props]);
 
     useEffect(() => {
-        if (body.current) {
-            db.friends
-                ?.where("name")
-                .startsWithAnyOfIgnoreCase(["position"])
-                .first()
-                .then((rez) => {
-                  //  if (rez) body.current?.setTranslation({x: rez.x, y: rez.y, z: rez.z});
-                });
-        }
+
     }, []);
 
     useEffect(() => {
-        setCameraOffset(new THREE.Vector3(0, 5 + selectResize / 5, -(10 + selectResize / 5)))
+        setCameraOffset(new THREE.Vector3(0, 10 + selectResize / 5, -(20 + selectResize / 5)))
     }, [selectResize]);
 
 
 
     const [wheelDirection, setWheelDirection] = useState(0); // Угол направления колеса
-    const [cameraOffset, setCameraOffset] = useState(new THREE.Vector3(0, 5 + selectResize / 5, -(10 + selectResize / 5))); // Смещение камеры
+    const [cameraOffset, setCameraOffset] = useState(new THREE.Vector3(0, 10 + selectResize / 5, -(20 + selectResize / 5))); // Смещение камеры
     const pushForce = 1; // Сила толкания
-    const turnSpeed = 1; // Скорость поворота
+    const turnSpeed = 1.5; // Скорость поворота
     const wheelRadius = 1; // Радиус колеса
 
     useFrame((state, delta) => {
@@ -78,8 +70,8 @@ export default function Wheel(props) {
             const wheelPosition = body.current?.translation();
             const angularVelocity = body.current?.angvel()
 
-            if (leftward) setWheelDirection((prev) => prev + turnSpeed * delta); // Поворот влево
-            if (rightward) setWheelDirection((prev) => prev - turnSpeed * delta); // Поворот вправо
+          //  if (!leftward) setWheelDirection((prev) => prev - control * delta); // Поворот влево
+         //   if (!rightward) setWheelDirection((prev) => prev + control * delta); // Поворот вправо
 
             const direction = new THREE.Vector3(
                 Math.sin(wheelDirection), // X-компонента
@@ -102,15 +94,14 @@ export default function Wheel(props) {
 
             body.current?.setAngvel({
                 x: angularVelocity.x, // Сохраняем скорость по X
-                y: leftward ? (turnSpeed * 2)  : rightward ? -(turnSpeed * 2): 0, // Обновляем скорость по Y
+                y: leftward ? (control * turnSpeed)  : rightward ? -(control * turnSpeed): 0, // Обновляем скорость по Y
                 z: angularVelocity.z  // Сохраняем скорость по Z
             });
 
-
             const cameraTargetPosition = new THREE.Vector3(
-                wheelPosition.x + cameraOffset.x * Math.cos(wheelDirection) - cameraOffset.z * Math.sin(-wheelDirection),
+              wheelPosition.x + cameraOffset.x * Math.cos(wheelDirection) - cameraOffset.z * Math.sin(-wheelDirection),
                 wheelPosition.y + cameraOffset.y,
-                wheelPosition.z + cameraOffset.x * Math.sin(wheelDirection) + cameraOffset.z * Math.cos(wheelDirection)
+               wheelPosition.z + cameraOffset.x * Math.sin(wheelDirection) + cameraOffset.z * Math.cos(wheelDirection)
             );
 
             state.camera.position.lerp(cameraTargetPosition, 0.1);
@@ -141,7 +132,7 @@ export default function Wheel(props) {
                 colliders={"hull"}
                 disableFollowCam={true}
             >
-                <primitive castShadow receiveShadow object={scene} ref={ref} scale={[0.3,0.3,0.3]} />
+                <primitive castShadow receiveShadow object={scene} ref={ref} scale={[2,1.5,1.5]} />
                 <BallCollider onIntersectionEnter={(e)=>{
                        console.log(e.rigidBodyObject.children.filter((el)=>el.name))
                 }} args={[0.5,0.5]} sensor={true} position={[0,0,0]} />

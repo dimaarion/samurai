@@ -8,7 +8,10 @@ export default function Plane(props) {
     console.log(nodes)
     return (
         <RigidBody type="fixed" colliders="trimesh">
-            <Gltf castShadow receiveShadow  scale={0.11} src="./asset/model/level1.glb" />
+            <mesh receiveShadow rotation-x={-Math.PI / 2} position={[0,-2,0]} >
+                <planeGeometry args={[500, 500]} />
+                <meshStandardMaterial  color="green"  />
+            </mesh>
         </RigidBody>
     )
 }

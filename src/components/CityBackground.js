@@ -3,7 +3,7 @@ import * as THREE from "three";
 import {Decal} from "@react-three/drei";
 import {useEffect} from "react";
 
-export default function CityBackground() {
+export default function CityBackground(props) {
     const Background = () => {
         const { scene } = useThree();
         useEffect(() => {
@@ -17,11 +17,11 @@ export default function CityBackground() {
     };
 
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('./asset/texture/city.png'); // Панорамное изображение
+    const texture = textureLoader.load(props.file); // Панорамное изображение
 
 
     return (
-        <mesh>
+        <mesh position={[0,50,0]}>
             <sphereGeometry args={[600, 50, 50]} />
             <meshBasicMaterial map={texture} side={THREE.BackSide} />
         </mesh>

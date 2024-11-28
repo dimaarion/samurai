@@ -6,7 +6,7 @@ import {
     Environment,
     Cloud,
     Clouds,
-    useGLTF, OrbitControls, PositionalAudio, CameraControls, Gltf, PerspectiveCamera,
+    useGLTF, OrbitControls, PositionalAudio, CameraControls, Gltf, PerspectiveCamera, OrthographicCamera,
 } from "@react-three/drei"
 
 import * as THREE from "three";
@@ -24,7 +24,12 @@ import garage from "./assets/garage.json"
 import level from "./assets/level.json"
 import {Physics} from '@react-three/rapier'
 import Wheel from "./components/Wheel";
-
+import {get,set,setPrefix} from "lockr";
+import {routable} from "./actions";
+import Wheel_2 from "./components/Wheel_2";
+import Experience from "./components/Experience";
+import Car from "./components/Car";
+import Plane from "./components/Plane";
 
 
 export default function App() {
@@ -58,6 +63,17 @@ export default function App() {
         {name: "action4", keys: ["KeyF"]},
     ];
 
+    const keyboardMap2 = [
+        { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
+        { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
+        { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
+        { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+        { name: 'run', keys: ['Shift'] },
+        { name: 'brake', keys: ['Space'] },
+        { name: 'gearUp', keys: ['Period'] },
+        { name: 'gearDown', keys: ['Comma'] },
+    ];
+
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden) {
@@ -88,25 +104,38 @@ export default function App() {
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
-                    <Sky/>
-                    <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue"/>
-                    <directionalLight castShadow intensity={0.2} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0001}
-                                      position={[10, 50, -10]}/>
-                    <ambientLight intensity={1}/>
-                    <pointLight castShadow intensity={0.8} position={[50, 100, 50]}/>
 
+                    <hemisphereLight intensity={0.45 * Math.PI} />
+                    <spotLight decay={0} angle={0.4} penumbra={1} position={[20, 30, 2.5]} castShadow shadow-bias={-0.00001} />
+                    <directionalLight decay={0} color="red" position={[-10, -10, 0]} intensity={1.5} />
+                    <Clouds material={THREE.MeshBasicMaterial}>
+                        <Cloud seed={10} bounds={50} volume={80} position={[40, 0, -80]} />
+                        <Cloud seed={10} bounds={50} volume={80} position={[-40, 10, -80]} />
+                    </Clouds>
+                    <Environment preset="city" />
+                    <Sky />
                     <KeyboardControls map={keyboardMap}>
+
+                        <PerspectiveCamera  fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, 20]} />
+                        <OrthographicCamera
+                            near={-1000}
+                            far={1000}
+                            position={[0, 100, 0]}
+                            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
+                            zoom={15}
+                        />
                         <Physics debug={false} gravity={[0, -30, 0]} paused={pause}>
                             {level.filter((el) => el.level === 1).map((el) => <Platform key={el.level + "platform"}
                                                                                         url={el.model}
+                                                                                        position={el.position}
                                                                                         actionsArray={el.animations}/>)}
-                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Wheel url={el.model}
-                                                                                               position={el.position}
-                                                                                               key={el.id}
-                                                                                               friction={el.friction}
-                                                                                               mass={el.mass}
-                                                                                               control={el.control}
-                                                                                               speed={el.speed}/>)}
+                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Car url={el.model}
+                                                                                                 position={el.position}
+                                                                                                 key={el.id}
+                                                                                                 friction={el.friction}
+                                                                                                 mass={el.mass}
+                                                                                                 control={el.control}
+                                                                                                 speed={el.speed}/>)}
 
 
                         </Physics>
@@ -114,8 +143,8 @@ export default function App() {
                         <PositionalAudio
                             ref={sound}
                             hasPlaybackControl={true}
-                            autopla={true}
-                            loop={true}
+                            autoplay={true}
+                            loop={false}
                             url="./asset/sound/y2mate.com - Dmitriy Lukyanov_Underwater.mp3"
                             distance={music}
                         />

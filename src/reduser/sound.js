@@ -9,20 +9,13 @@ export const sound = createSlice({
         value: 0,
     },
     reducers: {
-        updateSound: (state, action) => {
+        getSound: (state, action) => {
             state.value = action.payload;
-        },
-        getSound: (state) => {
-            db.music?.where("name").startsWithAnyOfIgnoreCase(["sound"]).first().then((rez) => {
-                console.log(rez)
-                state.value = rez.values;
-            })
-
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const {updateSound,getSound} = sound.actions
+export const {getSound} = sound.actions
 
 export default sound.reducer

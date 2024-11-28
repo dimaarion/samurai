@@ -5,11 +5,11 @@
     "img": "./asset/img/wheel-three.png",
     "model": "./asset/model/wheel-tree.glb",
     "price": 100,
-    "speed": 20,
-    "control": 1,
-    "friction": 5,
+    "speed": 15,
+    "control": 1.2,
+    "friction": 1,
     "mass": 1,
-    "position": [0,3,0]
+    "position": [0,0,0]
 
   },
   {
@@ -21,7 +21,8 @@
     "speed": 12,
     "control": 50,
     "friction": 0.1,
-    "mass": 1
+    "mass": 1,
+    "position": [0,3,0]
 
   }
 

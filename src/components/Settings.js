@@ -2,11 +2,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateMusic} from "../reduser/music";
 import {useEffect, useState} from "react";
 import {db} from "./Database";
-import {getSound, updateSound} from "../reduser/sound";
+import {getSound} from "../reduser/sound";
 import CloseBtn from "./CloseBtn";
 import {decrementSettings, incrementSettings} from "../reduser/settingsOpen";
 import {decrementPause, incrementPause} from "../reduser/pause";
 import {updateResize} from "../reduser/resize";
+import {get,set,setPrefix} from "lockr";
 
 
 export default function Settings() {
@@ -15,43 +16,15 @@ export default function Settings() {
     const selectSound = useSelector((state) => state.sound.value);
     const selectResize = useSelector((state) => state.resize.value);
     const [over, setOver] = useState({play: "#FF803F", border: "#00CAC9"});
-    const [sound, setSound] = useState(50);
-    const [music, setMusic] = useState(50);
 
-    useEffect(() => {
-        try {
-            //   db.music.add({name: "music", value: 0, active:1});
+    setPrefix("lockr_")
+useEffect(()=>{
+    dispatch(updateMusic(get('music')))
+},[])
 
-            db.music?.where("name").startsWithAnyOfIgnoreCase(["music"]).first().then((rez) => {
-                dispatch(updateMusic(rez.value));
-            })
-
-            db.music?.where("name").startsWithAnyOfIgnoreCase(["sound"]).toArray().then((rez) => {
-                if (rez.length === 0) {
-                    // db.music.add({name: "sound", value: 0, active: 1});
-                }
-            })
-            db.music?.where("name").startsWithAnyOfIgnoreCase(["music"]).toArray().then((rez) => {
-                if (rez.length === 0) {
-                    // db.music.add({name: "music", value: 0, active: 1});
-                }
-            })
-        } catch (e) {
-
-        }
-
-
-
-    }, [])
-
-    useEffect(() => {
-       dispatch(getSound())
-        console.log(selectSound)
-    }, [selectSound])
 
     return <>
         <div className="fixed z-30 text-center w-[400px] left-0 right-0 m-auto mt-[100px]">
-            <div className={"text-white text-2xl bg-black"}>{selectSound}</div>
             <svg width="100%" viewBox="0 0 789 800" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="gradient_1" gradientUnits="userSpaceOnUse" x1="394.5" y1="0" x2="394.5"
@@ -120,14 +93,18 @@ export default function Settings() {
                 </g>
             </svg>
 
-            <input type={"range"} id="sound" min={0} max={100} defaultValue={selectSound}
-                   onChange={(e) => {
-                       db.music.update(1, {value: e.target.value, active: 1})
+            <input type={"range"} id="sound" min={0} max={100}  defaultValue={get("sound")}
+                   onChange={(e)=> {
+                       set('sound', e.target.value);
+                       dispatch(getSound(e.target.value))
                    }}
                    className="absolute top-[110px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range"/>
 
-            <input type={"range"} min={0} max={100} defaultValue={0}
-                   onChange={(e) => {}}
+            <input type={"range"} min={0} max={100} defaultValue={get('music')}
+                   onChange={(e) => {
+                       set('music', e.target.value);
+                       dispatch(updateMusic(e.target.value))
+                   }}
                    className="absolute top-[175px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range"/>
 
             <input type={"range"} min={0} max={100} defaultValue={selectResize}
@@ -137,7 +114,7 @@ export default function Settings() {
             <div onMouseDown={() => {
                 dispatch(decrementSettings());
                 dispatch(decrementPause());
-
+             //   updateSounds()
             }} className="absolute w-[150px] bottom-10 right-0 left-0 m-auto cursor-pointer">
                 <CloseBtn/>
             </div>
