@@ -124,7 +124,7 @@ export default function App() {
                             rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
                             zoom={15}
                         />
-                        <Physics debug={false} gravity={[0, -30, 0]} paused={pause}>
+                        <Physics debug={false} gravity={[0, -5, 0]} paused={pause}>
                             {level.filter((el) => el.level === 1).map((el) => <Platform key={el.level + "platform"}
                                                                                         url={el.model}
                                                                                         position={el.position}
@@ -161,5 +161,6 @@ useGLTF.preload([
     './asset/model/well.glb',
     './asset/model/wheel-tree.glb',
     './asset/model/wheel_1.glb',
-    './asset/model/level_1_1.glb'
+    './asset/model/level_1_1.glb',
+    './asset/model/VintageRacingCar.glb'
 ]);

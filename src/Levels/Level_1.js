@@ -13,7 +13,7 @@ export default function Level_1(props) {
     const { ref,actions} = useAnimations(animations)
     const [actionsArray, setActionsArray] = useState([])
     const pause = useSelector((state) => state.pause.value);
-    const environmentRef = useRef();
+
 
 
 
@@ -22,7 +22,7 @@ export default function Level_1(props) {
         if (props.actionsArray) {
             setActionsArray(props.actionsArray)
         }
-        console.log(nodes)
+      //  console.log(nodes)
     }, [])
 
     useEffect(() => {
@@ -57,7 +57,7 @@ export default function Level_1(props) {
 
 // Пример: 5 рядов и 5 колонн зданий с расстоянием 500 между ми
    const cityData = generateCityData(5, 1, 150);
-console.log(cityData)
+//console.log(cityData)
 
 
 
@@ -88,13 +88,6 @@ console.log(cityData)
             <primitive castShadow receiveShadow  object={nodes.op} name={"op"}/>
 
             <primitive castShadow receiveShadow  object={nodes.point} name={"point"}/>
-
-            <group scale={0.3} rotation={[0,0,routable(90)]} >
-                {cityData.map((el,i)=><mesh key={i + "op"} castShadow receiveShadow position={[el.x,el.y,el.z]}  geometry={nodes.coins.geometry} material={materials["bg.001"]}   name={"coins"}/>)}
-            </group>
-
-
-
 
         </group>
 
