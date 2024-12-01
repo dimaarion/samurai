@@ -30,6 +30,7 @@ import Wheel_2 from "./components/Wheel_2";
 import Experience from "./components/Experience";
 import Car from "./components/Car";
 import Plane from "./components/Plane";
+import Car2 from "./components/Car2";
 
 
 export default function App() {
@@ -105,31 +106,23 @@ export default function App() {
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
 
-                    <hemisphereLight intensity={0.45 * Math.PI} />
-                    <spotLight decay={0} angle={0.4} penumbra={1} position={[20, 30, 2.5]} castShadow shadow-bias={-0.00001} />
-                    <directionalLight decay={0} color="red" position={[-10, -10, 0]} intensity={1.5} />
+                    <hemisphereLight intensity={0.2} />
+                    <spotLight  angle={0.4} penumbra={1} position={[-50, 50, 2.5]} castShadow shadow-bias={-0.00001} />
+                    <directionalLight  color="red" position={[-10, 50, 0]} intensity={1.5} />
                     <Clouds material={THREE.MeshBasicMaterial}>
-                        <Cloud seed={10} bounds={50} volume={80} position={[40, 0, -80]} />
-                        <Cloud seed={10} bounds={50} volume={80} position={[-40, 10, -80]} />
+                        <Cloud seed={10} bounds={50} volume={80} position={[40, 100, -80]} />
+                        <Cloud seed={10} bounds={50} volume={80} position={[50, 100, 80]} />
                     </Clouds>
                     <Environment preset="city" />
-                    <Sky />
+                    <Sky distance={1000} />
                     <KeyboardControls map={keyboardMap}>
 
-                        <PerspectiveCamera  fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, 20]} />
-                        <OrthographicCamera
-                            near={-1000}
-                            far={1000}
-                            position={[0, 100, 0]}
-                            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-                            zoom={15}
-                        />
-                        <Physics debug={false} gravity={[0, -5, 0]} paused={pause}>
+                        <Physics debug={false} gravity={[0, -20, 0]} paused={pause}>
                             {level.filter((el) => el.level === 1).map((el) => <Platform key={el.level + "platform"}
                                                                                         url={el.model}
                                                                                         position={el.position}
                                                                                         actionsArray={el.animations}/>)}
-                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Car url={el.model}
+                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Car2 url={el.model}
                                                                                                  position={el.position}
                                                                                                  key={el.id}
                                                                                                  friction={el.friction}
@@ -149,7 +142,7 @@ export default function App() {
                             distance={music}
                         />
                     </KeyboardControls>
-
+<OrbitControls />
                 </Canvas>
             </StartGame>
 

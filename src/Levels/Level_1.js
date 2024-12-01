@@ -71,24 +71,8 @@ export default function Level_1(props) {
             <RigidBody  colliders="trimesh" type="fixed">
                 <primitive castShadow receiveShadow object={nodes.road} name={"road"}/>
             </RigidBody>
-            <RigidBody colliders="trimesh" type="fixed" >
-                <primitive castShadow receiveShadow object={nodes.fence} name={"fence"}/>
-            </RigidBody>
-
-            <group  name={"coin"} >
-                <primitive  castShadow receiveShadow object={nodes.coinR} />
-                <skinnedMesh castShadow receiveShadow geometry={nodes.coin.geometry} material={materials["bg.001"]} skeleton={nodes.coin.skeleton} />
-
-            </group>
-            <RigidBody colliders="trimesh" type="fixed">
-            <primitive castShadow receiveShadow  object={nodes.box_rek} name={"box_rek"}/>
-            </RigidBody>
-            <primitive castShadow receiveShadow  object={nodes.start} name={"start"}/>
-
-            <primitive castShadow receiveShadow  object={nodes.op} name={"op"}/>
-
-            <primitive castShadow receiveShadow  object={nodes.point} name={"point"}/>
-
+            <primitive object={nodes.plane} />
+            <primitive object={nodes.build} />
         </group>
 
         {/*cityData.map((el)=><City position={[el.x,el.y,el.z]}/>)*/}
