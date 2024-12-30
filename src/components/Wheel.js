@@ -1,143 +1,107 @@
-import {useFrame, useStore} from "@react-three/fiber";
-import {
-    Box,
-    CameraControls,
-    OrbitControls,
-    PerspectiveCamera,
-    Shape,
-    useGLTF,
-    useKeyboardControls
-} from "@react-three/drei";
-import Controller from "ecctrl";
+import {Box, Cylinder, Gltf, useAnimations, useGLTF, useKeyboardControls} from "@react-three/drei";
 import {useEffect, useRef, useState} from "react";
-import * as THREE from "three";
-import {db} from "./Database";
-import {useSelector} from "react-redux";
-import {BallCollider, RigidBody} from "@react-three/rapier";
+import {useFrame} from "@react-three/fiber";
+import {Vector3} from "three";
 import {routable} from "../actions";
+import {BallCollider, RigidBody, useRevoluteJoint} from "@react-three/rapier";
+import * as THREE from "three";
+import Controller from "ecctrl";
+import {get, set} from "lockr"
+import {useDispatch, useSelector} from "react-redux";
+import {decrementPause, incrementPause} from "../reduser/pause";
+import {incrementPauseOpen} from "../reduser/pauseOpen";
 
-export default function Wheel(props) {
+
+export default function Gear(props) {
+
     const [, get] = useKeyboardControls();
-
-    const ref = useRef(); // Ссылка на визуальное колесо
-    const body = useRef(); // Ссылка на физическое тело
-    const box = useRef(); // Ссылка на физическое тело
-    const [speed, setSpeed] = useState(1);
-    const [control, setControl] = useState(50);
-    const [friction, setFriction] = useState(1);
-    const selectResize = useSelector((state) => state.resize.value)
-    const [mass, setMass] = useState(0.5);
+    const carRef = useRef();
+    const {nodes, materials, animations} = useGLTF('./asset/model/wheel-tree.glb');
     const restart = useSelector((state) => state.restart.value);
-    const pause = useSelector((state) => state.pause.value);
-    const {scene} = useGLTF(props.url?props.url:"./asset/model/wheel-tree.glb");
+//console.log(nodes)
+    const speed = props.speed;
+    const turnSpeed = props.control;
+    const dispatch = useDispatch();
 
-
-
-    const previousAngle = useRef(0); // Хранение предыдущего угла камеры
-    const rotationSpeed = useRef(0);
-    useEffect(() => {
-        if (props.speed) setSpeed(props.speed);
-        if (props.control) setControl(props.control);
-        if (props.friction) setFriction(props.friction);
-        if (props.mass) setMass(props.mass);
-
-    }, [props]);
-
-    useEffect(() => {
-
-    }, []);
-
-    useEffect(() => {
-        setCameraOffset(new THREE.Vector3(0, 10 + selectResize / 5, -(20 + selectResize / 5)))
-    }, [selectResize]);
-
-
-
-    const [wheelDirection, setWheelDirection] = useState(0); // Угол направления колеса
-    const [cameraOffset, setCameraOffset] = useState(new THREE.Vector3(0, 10 + selectResize / 5, -(20 + selectResize / 5))); // Смещение камеры
-    const pushForce = 1; // Сила толкания
-    const turnSpeed = 1.5; // Скорость поворота
-    const wheelRadius = 1; // Радиус колеса
 
     useFrame((state, delta) => {
-        const {forward, backward, leftward, rightward, jump} = get();
+        if(!carRef.current){
+            return
+        }
+        const {forward, backward, leftward, rightward} = get();
         if (forward || backward || leftward || rightward) {
-
+            carRef.current?.wakeUp();
+        } else {
+            //  body.current?.sleep();
         }
 
-        if (body.current) {
-
-            const wheelPosition = body.current?.translation();
-            const angularVelocity = body.current?.angvel()
-
-          //  if (!leftward) setWheelDirection((prev) => prev - control * delta); // Поворот влево
-         //   if (!rightward) setWheelDirection((prev) => prev + control * delta); // Поворот вправо
-
-            const direction = new THREE.Vector3(
-                Math.sin(wheelDirection), // X-компонента
-                0, // Y не изменяется
-                Math.cos(wheelDirection) // Z-компонента
-            );
-
-            const currentQuaternion = body.current.rotation();
-
-// Создаем новый кватернион только для вращения по оси Y
-            const newQuaternionY = new THREE.Quaternion();
-            newQuaternionY.setFromEuler(new THREE.Euler(0, wheelDirection, 0));
-
-// Объединяем текущий кватернион с новым (умножение кватернионов)
-            const finalQuaternion = newQuaternionY.multiply(currentQuaternion);
-
-// Устанавливаем итоговый кватернион
-            body.current.setRotation(finalQuaternion);
 
 
-            body.current?.setAngvel({
-                x: angularVelocity.x, // Сохраняем скорость по X
-                y: leftward ? (control * turnSpeed)  : rightward ? -(control * turnSpeed): 0, // Обновляем скорость по Y
-                z: angularVelocity.z  // Сохраняем скорость по Z
-            });
+        // Get the car's current velocity and rotation
+        const velocity = carRef.current?.linvel();
 
-            const cameraTargetPosition = new THREE.Vector3(
-              wheelPosition.x + cameraOffset.x * Math.cos(wheelDirection) - cameraOffset.z * Math.sin(-wheelDirection),
-                wheelPosition.y + cameraOffset.y,
-               wheelPosition.z + cameraOffset.x * Math.sin(wheelDirection) + cameraOffset.z * Math.cos(wheelDirection)
-            );
+        const rotation = carRef.current?.rotation();
 
-            state.camera.position.lerp(cameraTargetPosition, 0.1);
+        const quaternion = new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 
-            // Камера смотрит на колесо
-            state.camera.lookAt(wheelPosition.x, wheelPosition.y, wheelPosition.z);
+        // Calculate the forward direction vector
+        const forwardVector = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion).normalize();
 
-
-
+        // Determine the desired movement (forward/backward)
+        let forwardVelocity = 0;
+        if (forward) {
+            forwardVelocity = speed;
+        } else if (backward) {
+            forwardVelocity = -speed;
         }
+
+        // Apply forward/backward movement
+
+
+        // Apply turning (left/right)
+        let angularVelocity = 0;
+        if (leftward) {
+            angularVelocity = turnSpeed;
+        } else if (rightward) {
+            angularVelocity = -turnSpeed;
+        }
+
+        // Apply angular velocity for turning
+        carRef.current?.setAngvel({
+            x: forwardVelocity * forwardVector.x,
+            y: angularVelocity,
+            z: forwardVelocity * forwardVector.z
+        });
+if(velocity.y < -20){
+    dispatch(incrementPause())
+    dispatch(incrementPauseOpen())
+    carRef.current?.setAngvel({
+        x: 0,
+        y: 0,
+        z: 0
     });
+    console.log(velocity.y)
+}
 
 
 
-    return (
-        <>
-            <Controller
-                {...props}
+    })
 
-                maxVelLimit={speed}
-                ref={body}
-                mass={mass}
-                camInitDir={{x: 0.5, y: 0}}
-                mode={"FixedCamera"}
-                friction={friction}
-                camUpLimit={5}
-                camInitDis={-20}
-                colliders={"hull"}
-                disableFollowCam={true}
-            >
-                <primitive castShadow receiveShadow object={scene} ref={ref} scale={[2,1.5,1.5]} />
-                <BallCollider onIntersectionEnter={(e)=>{
-                       console.log(e.rigidBodyObject.children.filter((el)=>el.name))
-                }} args={[0.5,0.5]} sensor={true} position={[0,0,0]} />
-            </Controller>
 
-        </>
-    );
+    return <>
+        <Controller position={props.position}  name={"player"} camInitDir={{x: routable(20), y: routable(90)}}
+                    friction={props.friction} disableControl={true} turnSpeed={1} camInitDis={-20} colliders={"hull"}
+                    ref={carRef} type={"dynamic"} mass={props.mass}>
+            <group scale={0.3} rotation={[routable(90), 0, 0]}>
+                <mesh geometry={nodes.wheel.geometry}/>
+            </group>
+
+
+            <BallCollider args={[1, 1, 1]} sensor={true} onIntersectionEnter={(e) => {
+
+
+            }}/>
+        </Controller>
+
+    </>
 }

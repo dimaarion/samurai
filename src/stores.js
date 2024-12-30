@@ -11,6 +11,7 @@ import settingsOpen from "./reduser/settingsOpen";
 import garageOpen from "./reduser/garageOpen";
 import pauseOpen from "./reduser/pauseOpen";
 import resize from "./reduser/resize";
+import garage from "./reduser/garage";
 
 
 
@@ -27,6 +28,7 @@ export default configureStore({
         settings:settingsOpen,
         garageOpen:garageOpen,
         pauseOpen:pauseOpen,
-        resize:resize
+        resize:resize,
+        garage:garage
     },
 })

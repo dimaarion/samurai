@@ -11,8 +11,6 @@ import {
 
 import * as THREE from "three";
 import Platform from "./components/Platform";
-import Ball from "./Ball";
-import CityBackground from "./components/CityBackground";
 import {useSelector} from "react-redux";
 import Pause from "./components/Pause";
 import StartGame from "./components/StartGame";
@@ -24,12 +22,8 @@ import garage from "./assets/garage.json"
 import level from "./assets/level.json"
 import {Physics} from '@react-three/rapier'
 import Wheel from "./components/Wheel";
-import {get,set,setPrefix} from "lockr";
-import {routable} from "./actions";
-import Wheel_2 from "./components/Wheel_2";
-import Experience from "./components/Experience";
-import Car from "./components/Car";
-import Plane from "./components/Plane";
+import {get, set, setPrefix} from "lockr";
+
 
 
 export default function App() {
@@ -39,6 +33,7 @@ export default function App() {
     const music = useSelector((state) => state.music.value);
     const garageOpen = useSelector((state) => state.garageOpen.value);
     const pauseOpen = useSelector((state) => state.pauseOpen.value);
+    const selectGarage = useSelector((state) => state.garage.value);
     const sound = useRef();
 
     const Background = () => {
@@ -64,14 +59,14 @@ export default function App() {
     ];
 
     const keyboardMap2 = [
-        { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
-        { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
-        { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
-        { name: 'right', keys: ['ArrowRight', 'KeyD'] },
-        { name: 'run', keys: ['Shift'] },
-        { name: 'brake', keys: ['Space'] },
-        { name: 'gearUp', keys: ['Period'] },
-        { name: 'gearDown', keys: ['Comma'] },
+        {name: 'forward', keys: ['ArrowUp', 'KeyW']},
+        {name: 'backward', keys: ['ArrowDown', 'KeyS']},
+        {name: 'left', keys: ['ArrowLeft', 'KeyA']},
+        {name: 'right', keys: ['ArrowRight', 'KeyD']},
+        {name: 'run', keys: ['Shift']},
+        {name: 'brake', keys: ['Space']},
+        {name: 'gearUp', keys: ['Period']},
+        {name: 'gearDown', keys: ['Comma']},
     ];
 
     useEffect(() => {
@@ -89,7 +84,15 @@ export default function App() {
         return () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
+
+
     }, []);
+    if (!get("lockr_levels")) {
+        set("lockr_levels", level)
+    }
+    if (!get("lockr_garage")) {
+        set("lockr_garage", garage)
+    }
 
 
     return (
@@ -104,38 +107,31 @@ export default function App() {
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
-
-                    <hemisphereLight intensity={0.45 * Math.PI} />
-                    <spotLight decay={0} angle={0.4} penumbra={1} position={[20, 30, 2.5]} castShadow shadow-bias={-0.00001} />
-                    <directionalLight decay={0} color="red" position={[-10, -10, 0]} intensity={1.5} />
+                    <hemisphereLight intensity={0.2}/>
+                    <spotLight angle={0.4} penumbra={1} position={[-50, 50, 2.5]} castShadow shadow-bias={-0.00001}/>
+                    <directionalLight color="red" position={[-10, 50, 0]} intensity={1.5}/>
                     <Clouds material={THREE.MeshBasicMaterial}>
-                        <Cloud seed={10} bounds={50} volume={80} position={[40, 0, -80]} />
-                        <Cloud seed={10} bounds={50} volume={80} position={[-40, 10, -80]} />
+                        <Cloud seed={10} bounds={50} volume={80} position={[40, 100, -80]}/>
+                        <Cloud seed={10} bounds={50} volume={80} position={[50, 100, 80]}/>
                     </Clouds>
-                    <Environment preset="city" />
-                    <Sky />
+                    <Environment preset="city"/>
+                    <Sky distance={1000}/>
                     <KeyboardControls map={keyboardMap}>
 
-                        <PerspectiveCamera  fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, 20]} />
-                        <OrthographicCamera
-                            near={-1000}
-                            far={1000}
-                            position={[0, 100, 0]}
-                            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-                            zoom={15}
-                        />
-                        <Physics debug={false} gravity={[0, -5, 0]} paused={pause}>
-                            {level.filter((el) => el.level === 1).map((el) => <Platform key={el.level + "platform"}
-                                                                                        url={el.model}
-                                                                                        position={el.position}
-                                                                                        actionsArray={el.animations}/>)}
-                            {garage.filter((el) => el.id === 1 && !restart).map((el) => <Car url={el.model}
-                                                                                                 position={el.position}
-                                                                                                 key={el.id}
-                                                                                                 friction={el.friction}
-                                                                                                 mass={el.mass}
-                                                                                                 control={el.control}
-                                                                                                 speed={el.speed}/>)}
+                        <Physics debug={false} gravity={[0, -20, 0]} paused={pause}>
+                            {get("lockr_levels").filter((el) => el.level === 1).map((el) => <Platform
+                                key={el.level + "platform"}
+                                level={el.level}
+                                url={el.model}
+                                position={el.position}
+                                actionsArray={el.animations}/>)}
+                            {selectGarage.payload.filter((el) => el.id === 1 && !restart).map((el) => <Wheel url={el.model}
+                                                                                               position={el.position}
+                                                                                               key={el.id}
+                                                                                               friction={el.friction}
+                                                                                               mass={el.mass}
+                                                                                               control={el.control}
+                                                                                               speed={el.speed}/>)}
 
 
                         </Physics>
@@ -157,10 +153,9 @@ export default function App() {
     )
 }
 useGLTF.preload([
-    './asset/model/level1.glb',
+
     './asset/model/well.glb',
     './asset/model/wheel-tree.glb',
     './asset/model/wheel_1.glb',
-    './asset/model/level_1_1.glb',
-    './asset/model/VintageRacingCar.glb'
+    './asset/model/hest.glb',
 ]);

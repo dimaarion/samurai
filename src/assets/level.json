@@ -2,9 +2,10 @@
   {
     "level": 1,
     "name": "",
-    "model": "./asset/model/level1.glb",
-    "animations": ["coinAction.004"],
+    "model": "./asset/model/hest.glb",
     "position": [0,0,0],
-    "scale": 0.3
+    "playerPosition": [0,4,0],
+    "scaleLevel": 0.3,
+    "scalePlayer": 0.3
   }
 ]
