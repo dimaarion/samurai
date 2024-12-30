@@ -107,9 +107,9 @@ export default function App() {
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
-                    <hemisphereLight intensity={0.2}/>
-                    <spotLight angle={0.4} penumbra={1} position={[-50, 50, 2.5]} castShadow shadow-bias={-0.00001}/>
-                    <directionalLight color="red" position={[-10, 50, 0]} intensity={1.5}/>
+                    <hemisphereLight intensity={0.1}/>
+                    <spotLight angle={0.1} penumbra={1} position={[-50, 50, 2.5]} castShadow shadow-bias={-0.00001}/>
+                    <directionalLight color="red" position={[-10, 50, 0]} intensity={0.5}/>
                     <Clouds material={THREE.MeshBasicMaterial}>
                         <Cloud seed={10} bounds={50} volume={80} position={[40, 100, -80]}/>
                         <Cloud seed={10} bounds={50} volume={80} position={[50, 100, 80]}/>
@@ -118,7 +118,7 @@ export default function App() {
                     <Sky distance={1000}/>
                     <KeyboardControls map={keyboardMap}>
 
-                        <Physics debug={false} gravity={[0, -20, 0]} paused={pause}>
+                        <Physics debug={true} gravity={[0, -20, 0]} paused={pause}>
                             {get("lockr_levels").filter((el) => el.level === 1).map((el) => <Platform
                                 key={el.level + "platform"}
                                 level={el.level}

@@ -80,7 +80,7 @@ if(velocity.y < -20){
         y: 0,
         z: 0
     });
-    console.log(velocity.y)
+
 }
 
 
