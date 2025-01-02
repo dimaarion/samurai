@@ -19,7 +19,7 @@ export default function Settings() {
 
     setPrefix("lockr_")
 useEffect(()=>{
-    dispatch(updateMusic(get('music')))
+    dispatch(updateMusic(get('lockr_music')))
 },[])
 
 
@@ -93,14 +93,14 @@ useEffect(()=>{
                 </g>
             </svg>
 
-            <input type={"range"} id="sound" min={0} max={100}  defaultValue={get("sound")}
+            <input type={"range"} id="sound" min={0} max={100}  defaultValue={get("lockr_sound")}
                    onChange={(e)=> {
                        set('sound', e.target.value);
                        dispatch(getSound(e.target.value))
                    }}
                    className="absolute top-[110px] left-[130px] w-[220px] bg-orange appearance-none h-1 border-2 border-aqua cursor-pointer range"/>
 
-            <input type={"range"} min={0} max={100} defaultValue={get('music')}
+            <input type={"range"} min={0} max={100} defaultValue={get('lockr_music')}
                    onChange={(e) => {
                        set('music', e.target.value);
                        dispatch(updateMusic(e.target.value))

@@ -87,13 +87,14 @@ export default function App() {
 
 
     }, []);
-    if (!get("lockr_levels")) {
+    setPrefix("lockr_")
+    if (get("lockr_levels")) {
         set("lockr_levels", level)
     }
-    if (!get("lockr_garage")) {
+    if (get("lockr_garage")) {
         set("lockr_garage", garage)
     }
-
+console.log(selectGarage)
 
     return (
         <>
@@ -114,7 +115,7 @@ export default function App() {
                         <Cloud seed={10} bounds={50} volume={80} position={[40, 100, -80]}/>
                         <Cloud seed={10} bounds={50} volume={80} position={[50, 100, 80]}/>
                     </Clouds>
-                    <Environment preset="city"/>
+                    <Environment background={true}  path={"./asset/texture/"} files={"hilly_terrain_01_puresky_1k.hdr"} ground={{scale:100}}/>
                     <Sky distance={1000}/>
                     <KeyboardControls map={keyboardMap}>
 
@@ -125,7 +126,7 @@ export default function App() {
                                 url={el.model}
                                 position={el.position}
                                 actionsArray={el.animations}/>)}
-                            {selectGarage.payload.filter((el) => el.id === 1 && !restart).map((el) => <Wheel url={el.model}
+                            {selectGarage.filter((el) => el.id === 1 && !restart).map((el) => <Wheel url={el.model}
                                                                                                position={el.position}
                                                                                                key={el.id}
                                                                                                friction={el.friction}

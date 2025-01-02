@@ -89,10 +89,15 @@ if(velocity.y < -20){
 
 
     return <>
-        <Controller position={props.position}  name={"player"} camInitDir={{x: routable(20), y: routable(90)}}
+        <Controller
+                    position={props.position}
+                    floatHeight={0.1}
+                    capsuleRadius={0.1}
+                    name={"player"}
+                    camInitDir={{x: routable(20), y: routable(90)}}
                     friction={props.friction} disableControl={true} turnSpeed={1} camInitDis={-20} colliders={"hull"}
                     ref={carRef} type={"dynamic"} mass={props.mass}>
-            <group scale={0.3} rotation={[routable(90), 0, 0]}>
+            <group     rotation={[routable(0), 0, 0]}>
                 <mesh geometry={nodes.wheel.geometry}/>
             </group>
 
