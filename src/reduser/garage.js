@@ -8,9 +8,9 @@ export const garage = createSlice({
         value: get("lockr_garage"),
     },
     reducers: {
-        updateGarage: (state,payload) => {
-            state.value = payload;
-            set("lockr_garage",payload)
+        updateGarage: (state,action) => {
+            state.value = action.payload;
+            set("lockr_garage",action.payload)
         },
 
 

@@ -1,4 +1,4 @@
-import {RigidBody} from "@react-three/rapier";
+import {BallCollider, RigidBody} from "@react-three/rapier";
 import {useAnimations, useGLTF} from "@react-three/drei";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -56,7 +56,7 @@ export default function Level_1(props) {
     })
 
     function savePositions(e) {
-        return selectGarage.payload.map(obj =>
+        return selectGarage.map(obj =>
             obj.id === 1 ? {
                 ...obj,
                 position: [e.rigidBodyObject.position.x, e.rigidBodyObject.position.y, e.rigidBodyObject.position.z]
@@ -74,11 +74,11 @@ export default function Level_1(props) {
             </RigidBody>
 
             <RigidBody name={"point"} colliders={"trimesh"}  type={"fixed"} onIntersectionExit={(e)=>{
-               // e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
+                e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
             }
             } onIntersectionEnter={(e) => {
-             //   e.target.rigidBodyObject.children[0]?.material?.color.set('green');
-              //  dispatch(updateGarage(savePositions(e)))
+                e.target.rigidBodyObject.children[0]?.material?.color.set('green');
+                dispatch(updateGarage(savePositions(e)))
             }}>
                 <group>
                     <primitive object={nodes.point} />
@@ -87,32 +87,34 @@ export default function Level_1(props) {
 
             </RigidBody>
             <RigidBody name={"point"} colliders={"trimesh"}  type={"fixed"} onIntersectionExit={(e)=>{
-                // e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
+                 e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
             }
             } onIntersectionEnter={(e) => {
-                //   e.target.rigidBodyObject.children[0]?.material?.color.set('green');
-                //  dispatch(updateGarage(savePositions(e)))
+                   e.target.rigidBodyObject.children[0]?.material?.color.set('green');
+                  dispatch(updateGarage(savePositions(e)))
             }}>
                 <group>
                     <primitive object={nodes.point_1} />
                 </group>
 
             </RigidBody>
-            <RigidBody name={"point"} colliders={"trimesh"}  type={"fixed"} onIntersectionExit={(e)=>{
-                // e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
-            }
-            } onIntersectionEnter={(e) => {
-                //   e.target.rigidBodyObject.children[0]?.material?.color.set('green');
-                //  dispatch(updateGarage(savePositions(e)))
-            }}>
+            <RigidBody name={"point"} colliders={"trimesh"}  type={"fixed"} >
                 <group>
                     <primitive object={nodes.point_2} />
                 </group>
+<BallCollider args={ [2,2,2]} sensor={true} onIntersectionExit={(e)=>{
+    e.target.rigidBodyObject.children[0]?.material?.color.set('blue');
+}
+} onIntersectionEnter={(e) => {
 
+    e.target.rigidBodyObject.children[0]?.material?.color.set('green');
+    dispatch(updateGarage(savePositions(e)))
+    console.log("test")
+}}/>
             </RigidBody>
             <group>
 
-
+                {/*<primitive object={nodes.Landscape}/>*/}
 
             </group>
 

@@ -91,8 +91,8 @@ if(velocity.y < -20){
     return <>
         <Controller
                     position={props.position}
-                    floatHeight={0.1}
-                    capsuleRadius={0.1}
+                  //  floatHeight={0.1}
+                  //  capsuleRadius={0.1}
                     name={"player"}
                     camInitDir={{x: routable(20), y: routable(90)}}
                     friction={props.friction} disableControl={true} turnSpeed={1} camInitDis={-20} colliders={"hull"}
@@ -102,7 +102,7 @@ if(velocity.y < -20){
             </group>
 
 
-            <BallCollider args={[1, 1, 1]} sensor={true} onIntersectionEnter={(e) => {
+            <BallCollider args={[2, 2, 2]} sensor={true} onIntersectionEnter={(e) => {
 
 
             }}/>

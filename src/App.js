@@ -88,10 +88,10 @@ export default function App() {
 
     }, []);
     setPrefix("lockr_")
-    if (get("lockr_levels")) {
+    if (!get("lockr_levels")) {
         set("lockr_levels", level)
     }
-    if (get("lockr_garage")) {
+    if (!get("lockr_garage")) {
         set("lockr_garage", garage)
     }
 console.log(selectGarage)
@@ -108,15 +108,7 @@ console.log(selectGarage)
 
             <StartGame>
                 <Canvas shadows camera={{fov: 45}}>
-                    <hemisphereLight intensity={0.1}/>
-                    <spotLight angle={0.1} penumbra={1} position={[-50, 50, 2.5]} castShadow shadow-bias={-0.00001}/>
-                    <directionalLight color="red" position={[-10, 50, 0]} intensity={0.5}/>
-                    <Clouds material={THREE.MeshBasicMaterial}>
-                        <Cloud seed={10} bounds={50} volume={80} position={[40, 100, -80]}/>
-                        <Cloud seed={10} bounds={50} volume={80} position={[50, 100, 80]}/>
-                    </Clouds>
-                    <Environment background={true}  path={"./asset/texture/"} files={"hilly_terrain_01_puresky_1k.hdr"} ground={{scale:100}}/>
-                    <Sky distance={1000}/>
+                    <Environment background={true}  path={"./asset/texture/"} files={"hilly_terrain_01_puresky_1k.hdr"} ground={{scale:200,radius:5000,height:100}}/>
                     <KeyboardControls map={keyboardMap}>
 
                         <Physics debug={true} gravity={[0, -20, 0]} paused={pause}>
